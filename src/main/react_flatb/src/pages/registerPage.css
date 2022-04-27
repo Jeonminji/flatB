@@ -114,7 +114,13 @@ select {
     display: none;    
 }
 
-
+.success {
+    display: none;
+  }
+.error {
+    color: #ff2727;
+    display: block;
+  }
 
 /* 버튼 */
 .id_check_btn{
