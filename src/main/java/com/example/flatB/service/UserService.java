@@ -43,7 +43,6 @@ public class UserService implements UserDetailsService {
        return userRepository.existsByNickname(nickname);
     }
 
-
     @Override
     public UserEntity loadUserByUsername(String userId) throws UsernameNotFoundException {
         /* Optional<UserEntity> userEntityWrapper = userRepository.findByUserId(userId);

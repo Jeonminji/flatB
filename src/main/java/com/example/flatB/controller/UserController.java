@@ -47,64 +47,11 @@ public class UserController {
     @GetMapping("signup/{userId}/exists")
     public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userId) {
         return ResponseEntity.ok(userService.checkUserIdDuplicate(userId));
-        // return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.NOT_DUPLICATED_USERID),HttpStatus.OK);
-        // return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     //회원가입 시 닉네임 중복 확인
     @GetMapping("signup/{nickname}/exists")
     public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
         return ResponseEntity.ok(userService.checkNicknameDuplicate(nickname));
-        // return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.NOT_DUPLICATED_USERID),HttpStatus.OK);
-        // return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-
-    /* //회원가입 페이지
-    @PostMapping("/signup")
-    public String signUp(UserDto userDto) {
-        System.out.println("userId: " + userDto.getUserId() + "\npassword: " + userDto.getPassword());
-        userService.joinUser(userDto);
-        return "redirect:/user/login";
-    }*/
-
-    /*
-    //로그인 페이지
-    @GetMapping("/login")
-    public String login() {
-        return "/login"; //해당파일 return
-    }
-
-    //로그인 결과 페이지
-    @GetMapping("/login/result")
-    public String loginResult() {
-        return "/loginSuccess";
-    }
-
-    //로그아웃 페이지
-    @GetMapping("/logout")
-    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/user/logout/result";
-    }
-
-    // 로그아웃 결과 페이지
-    @GetMapping("/logout/result")
-    public String logout() {
-        return "/main";
-    }
-    */
-
-    // 접근 거부 페이지
-    @GetMapping("/denied")
-    public String denied() {
-        return "/denied";
-    }
-
-    // 마이페이지
-    @GetMapping("/info")
-    public String myInfo() {
-        return "/myPage";
-    }
-
-
 }
