@@ -36,7 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable() //form login 비활성화
                 .csrf().disable() //csrf 관련 설정 비활성화
                 .authorizeRequests()
-                .antMatchers("/**").permitAll(); //일단 모든 url에 대해서 접근할 수 있도록 허용
+                .antMatchers("/**").permitAll() //일단 모든 url에 대해서 접근할 수 있도록 허용
+                .antMatchers("/admin/**").hasRole("ADMIN") //관리자만 접근가능
+                .antMatchers("/user/myinfo", "/report").hasRole("MEMBER"); //유저만 접근 가능
     }
 
     @Override
