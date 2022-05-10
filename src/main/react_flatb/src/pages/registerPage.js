@@ -1,5 +1,6 @@
 import React, {useState, useCallback} from 'react';  
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import "./registerPage.css";
 import axios from 'axios';
 
@@ -50,6 +51,8 @@ const RegisterPage =(props) =>{
     const [contactMessage, setContactMessage] = useState('');
     const [isContact, setIsContact] = useState(false);
  
+    //페이지 이동
+    const navigate = useNavigate();
     
 
     const onChangeId = useCallback((e) => {
@@ -249,6 +252,47 @@ const RegisterPage =(props) =>{
       )
 
 
+      const onSubmit  = useCallback(
+        async (e) => {
+          e.preventDefault()
+          try {
+            await axios({
+              method: "POST",
+              url: '/user/signup',
+              data:{ 
+                userId: userId,
+                password: pw,
+                name: name,
+                nickname: nickname,
+                contact: contact,
+                age: age,
+                gender: gender}
+
+            })
+              .then((res) => {
+                if(res.status===201){
+                  Swal.fire({ 
+                    icon: 'success', // Alert 타입 
+                    title: '회원가입 성공', // Alert 제목 
+                    confirmButtonColor: '#DE4D31'
+                    });
+                  navigate("/login");
+                }
+                else{
+                  Swal.fire({ 
+                    icon: 'warning', // Alert 타입 
+                    title: '회원가입 실패', // Alert 제목 
+                    confirmButtonColor: '#DE4D31'
+                    });
+                }
+              })
+          } catch (err) {
+            console.error(err)
+          }
+        },
+        [userId,pw, name, nickname, contact, age, gender]
+      )
+
     return ( 
         <div className='register'> 
            <div className="header_logo">
@@ -260,7 +304,7 @@ const RegisterPage =(props) =>{
            <div className="register_wrap">
           
                 <div className="register_content">
-                <form>
+                <form onSubmit={onSubmit}>
 
                     {/* ID */}
                     <div>
@@ -360,6 +404,7 @@ const RegisterPage =(props) =>{
                     {/* JOIN BTN */}
                     <div className="register_btn_area">
                         <button className="register_btn"
+                        disabled={!(idCheck && isPw && isPwConfirm && isName && nickNameCheck && isAge && isGender && isContact)} 
                         type="submit">
                             가입하기
                         </button>
