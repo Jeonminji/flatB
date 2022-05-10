@@ -14,6 +14,11 @@ public class ResponseMessage {
     public static final String NOT_DUPLICATED_NICKNAME = "닉네임 사용 가능";
     public static final String DUPLICATED_NICKNAME = "닉네임 중복";
 
+    //크롤링관련
+    public static final String CRAWLLING_SUCCESS = "크롤링 성공";
+    public static final String CRAWLLING_FAIL = "크롤링 실패";
+
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 에러";
     public static final String DB_ERROR = "데이터베이스 에러";
+
 }
