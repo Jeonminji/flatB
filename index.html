@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+       <link rel="stylesheet" href="loginstyle.css">
+       <link rel="stylesheet" href="navigationbar.css">
+       
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a class="navbar-logo" href="#">
+            <img src="flatB_logo.png" width="30" alt="">
+        </a>
+       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+           <span class="navbar-toggler-icon"></span>
+       </button>
+       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+           <div class="navbar-nav">
+               <a class="nav-item nav-link" href="#">추천 테스트</a>
+               <a class="nav-item nav-link" href="#">플랫폼 비교</a>
+               <a class="nav-item nav-link" href="#">리뷰 게시판</a>
+               <a class="nav-item nav-link" href="#">모집 게시판</a>
+           </div>
+       </div>
+
+    </nav>
+
+    <section class="login-form">
+        <h1></h1>
+        <form action="">
+            <div class="int-area">
+                <input type="text" name="id" id="id"
+                autocomplete="off" required>
+                <label for="id">아이디</label>
+            </div>
+            <div class="int-area">
+                <input type="password" name="pw" id="pw"
+                autocomplete="off" required>
+                <label for="pw">비밀번호</label>
+            </div>
+            <div class="btn-area">
+                <button id = "btn"
+                type="submit">로그인</button>
+            </div>
+        </form>
+        <div class="caption">
+            <a href="">아이디/비밀번호 찾기</a>
+            <a href="">회원가입</a>
+        </div>
+    </section>
+
+    <script>
+        let id = $('#id');
+        let pw = $('#pw');
+        let btn = $('#btn');
+
+        $(btn).on('click', function() {
+            if($(id).val()=="") {
+                $(id).next('label').addClass('warning');
+                setTimeout(function() {
+                    $('label').removeClass('warning');
+                },1500);
+            }
+            else if($(pw).val()==""){
+                $(pw).next('label').addClass('warning');
+                setTimeout(function() {
+                    $('label').removeClass('warning');
+                },1500);
+            }
+        });
+    </script>
+
+</body>
+</html>
