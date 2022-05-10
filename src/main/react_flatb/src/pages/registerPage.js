@@ -1,14 +1,16 @@
 import React, {useState, useCallback} from 'react';  
 import { Link } from 'react-router-dom';
 import "./registerPage.css";
+import axios from 'axios';
 
 
 const RegisterPage =(props) =>{ 
 
-    // id . 오류메세지, 유효성검사
-    const [id, setId] = useState('');
+    // id . 오류메세지, 유효성검사, 중복확인
+    const [userId, setId] = useState('');
     const [idMessage, setIdMessage] = useState('');
     const [isId, setIsId] = useState(false);
+    const [idCheck, setIdCheck] = useState(false);
 
     // 비밀번호, 오류메세지, 유효성검사
     const [pw, setPw] = useState('');
@@ -27,10 +29,11 @@ const RegisterPage =(props) =>{
     const [nameMessage, setNameMessage] = useState('');
     const [isName, setIsName] = useState(false);
 
-    // 닉네임, 오류메세지, 유효성검사
-    const [ninkname, setNinkName] = useState('');
-    const [ninkNameMessage, setNinkNameMessage] = useState('');
-    const [isNinkName, setIsNinkName] = useState(false);
+    // 닉네임, 오류메세지, 유효성검사, 중복 확인
+    const [nickname, setNickName] = useState('');
+    const [nickNameMessage, setNickNameMessage] = useState('');
+    const [isNickName, setIsNickName] = useState(false);
+    const [nickNameCheck, setNickNameCheck] = useState(false);
 
     // 나이, 오류메세지, 유효성검사
     const [age, setAge] = useState('');
@@ -47,6 +50,7 @@ const RegisterPage =(props) =>{
     const [contactMessage, setContactMessage] = useState('');
     const [isContact, setIsContact] = useState(false);
  
+    
 
     const onChangeId = useCallback((e) => {
         const idRegex = /[a-zA-Z0-9_-]{5,10}/;
@@ -58,10 +62,11 @@ const RegisterPage =(props) =>{
             setIsId(false);
         }
         else if(!idRegex.test(idCurrent)){
-            setIdMessage('"5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다');
+            setIdMessage('5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다');
             setIsId(false);
         }
         else{
+            setIdMessage('');
             setIsId(true);
         }
         
@@ -127,21 +132,22 @@ const RegisterPage =(props) =>{
       }, []);
 
 
-      const onChangeNinkName = useCallback((e) => {
-        const ninknameRegex=/[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-        const ninknamespcRegex=/[~!@#$%^&*()_+|<>?:{}]/;
-        const ninknameCurrent = e.target.value;
-        setName(ninknameCurrent);
+      const onChangeNickName = useCallback((e) => {
+        const nicknameRegex=/[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+        const nicknamespcRegex=/[~!@#$%^&*()_+|<>?:{}]/;
+        const nicknameCurrent = e.target.value;
+        setNickName(nicknameCurrent);
 
-        if(ninknameCurrent === "" || ninknameCurrent===null){
-            setNinkNameMessage('필수 입력 요소입니다');
-            setIsNinkName(false);
+        if(nicknameCurrent === "" || nicknameCurrent===null){
+            setNickNameMessage('필수 입력 요소입니다');
+            setIsNickName(false);
         }
-        else if (!ninknameRegex.test(ninknameCurrent) || ninknamespcRegex.test(ninknameCurrent) || ninknameCurrent.indexOf(" ") > -1) {
-          setNinkNameMessage('한글과 영문 대 소문자 숫자를 사용하세요. (특수기호, 공백 사용 불가)');
-          setIsNinkName(false);
+        else if (!nicknameRegex.test(nicknameCurrent) || nicknamespcRegex.test(nicknameCurrent) || nicknameCurrent.indexOf(" ") > -1) {
+          setNickNameMessage('한글과 영문 대 소문자 숫자를 사용하세요. (특수기호, 공백 사용 불가)');
+          setIsNickName(false);
         } else {
-          setIsNinkName(true);
+          setIsNickName(true);
+          setNickNameMessage(null);
         }
       }, []);
 
@@ -174,7 +180,7 @@ const RegisterPage =(props) =>{
       }, []);
 
       const onChangeContact = useCallback((e) => {
-        const contactRegex=/([01]{2})([01679]{1})([0-9]{3,4})([0-9]{4})/;
+        const contactRegex=/([01]{2})([01679]{1})([-]{1})([0-9]{3,4})([-]{1})([0-9]{4})/;
         const contactCurrent=e.target.value;
         setContact(contactCurrent);
         if(contactCurrent===""){
@@ -189,6 +195,58 @@ const RegisterPage =(props) =>{
           setIsContact(true);
         }
       }, []);
+
+      
+      const onIdCheck  = useCallback(
+        async (e) => {
+          e.preventDefault()
+          try {
+            await axios({
+              method: "GET",
+              url: '/user/signup/'+ userId
+            }).then((res) => {
+                if (res.data === false) {
+                    setIdCheck(true);
+                    setIdMessage("사용 가능한 아이디입니다.");
+                }
+                else{
+                    setIdCheck(false);
+                    setIdMessage("사용 불가능한 아이디입니다.");
+                    setIsId(false);
+                }
+              })
+          } catch (err) {
+            console.error(err)
+          }
+        },
+        [userId]
+      )
+
+      const onNickNameCheck  = useCallback(
+        async (e) => {
+          e.preventDefault()
+          try {
+            await axios({
+              method: "GET",
+              url: '/user/signup/'+nickname+'/exists'
+            })
+              .then((res) => {
+                if (res.data === false) {
+                    setNickNameCheck(true);
+                    setNickNameMessage("사용 가능한 닉네임입니다.");
+                }
+                else{
+                    setNickNameCheck(false);
+                    setNickNameMessage("사용 불가능한 닉네임입니다.");
+                    setIsNickName(false);
+                }
+              })
+          } catch (err) {
+            console.error(err)
+          }
+        },
+        [nickname]
+      )
 
 
     return ( 
@@ -211,9 +269,9 @@ const RegisterPage =(props) =>{
                         </h3>
                         <span className="input_box int_id">
                             <input type="text" id="register_id" className="register_int" maxLength="20" onChange={onChangeId}/>
-                            <button className="id_check_btn" >중복</button>
+                            <button className="id_check_btn" onClick={onIdCheck} >중복</button>
                         </span>
-                        <span className={`register_errorTxt ${isId ? 'success' : 'error'}`}>{idMessage}</span>
+                        <span className={`register_errorTxt ${isId ? 'check_success' : 'error'}`}>{idMessage}</span>
                     </div>
                     {/*  PW1  */}
                     <div>
@@ -250,15 +308,16 @@ const RegisterPage =(props) =>{
                         <span className={`register_errorTxt ${isName ? 'success' : 'error'}`}>{nameMessage}</span>
                     </div>
 
-                    {/* NINKNAME */}
+                    {/* NickNAME */}
                     <div>
                         <h3>
-                            <label htmlFor="register_ninkname">닉네임</label>
+                            <label htmlFor="register_nickname">닉네임</label>
                         </h3>
-                        <span className="input_box int_ninkname">
-                            <input type="text" id="register_nickname" className="register_int" onChange={onChangeNinkName}/>
+                        <span className="input_box int_nickname">
+                            <input type="text" id="register_nickname" className="register_int" onChange={onChangeNickName}/>
+                            <button className="id_check_btn" onClick={onNickNameCheck}>중복</button>
                         </span>
-                        <span className={`register_errorTxt ${isNinkName ? 'success' : 'error'}`}>{ninkNameMessage}</span>
+                        <span className={`register_errorTxt ${isNickName ? 'check_success' : 'error'}`}>{nickNameMessage}</span>
                     </div>
 
                     {/* AGE */}
@@ -293,14 +352,14 @@ const RegisterPage =(props) =>{
                             <label htmlFor="register_contact">연락처</label>
                         </h3>
                         <span className="input_box int_contact">
-                            <input type="tel" id="register_contact" className="register_int" maxLength="11" onChange={onChangeContact}/>
+                            <input type="tel" id="register_contact" className="register_int" maxLength="13" onChange={onChangeContact}/>
                         </span>
                         <span className={`register_errorTxt ${isContact ? 'success' : 'error'}`}>{contactMessage}</span>
                     </div>
 
                     {/* JOIN BTN */}
                     <div className="register_btn_area">
-                        <button className="register_btn" 
+                        <button className="register_btn"
                         type="submit">
                             가입하기
                         </button>
