@@ -44,13 +44,13 @@ public class UserController {
     }
 
     //회원가입 시 아이디 중복 확인
-    @GetMapping("signup/{userId}/exists")
+    @GetMapping("signup/userId/{userId}/exists")
     public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userId) {
         return ResponseEntity.ok(userService.checkUserIdDuplicate(userId));
     }
 
     //회원가입 시 닉네임 중복 확인
-    @GetMapping("signup/{nickname}/exists")
+    @GetMapping("signup/nickname/{nickname}/exists")
     public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
         return ResponseEntity.ok(userService.checkNicknameDuplicate(nickname));
     }
