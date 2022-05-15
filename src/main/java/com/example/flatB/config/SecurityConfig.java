@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -27,29 +26,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception
     {
-        // static 디렉터리의 하위 파일 목록은 인증 무시 ( = 항상통과 )
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
+        super.configure(web);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/**"); //csrf token을 검사하지 않도록 우회
-        http.authorizeRequests()
-                // 페이지 권한 설정
-                .antMatchers("/**").permitAll() //누구나 접근 가능
-                .and() // 로그인 설정
-                .formLogin()
-                .loginPage("/user/login")
-                .defaultSuccessUrl("/user/login/result")
-                .permitAll()
-                .and() // 로그아웃 설정
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                .logoutSuccessUrl("/user/logout/result")
-                .invalidateHttpSession(true)
-                .and()
-                // 403 예외처리 핸들링
-                .exceptionHandling().accessDeniedPage("/user/denied");
+        http
+                .httpBasic().disable() //http basic 인증 방법 비활성화
+                .formLogin().disable() //form login 비활성화
+                .csrf().disable() //csrf 관련 설정 비활성화
+                .authorizeRequests()
+                .antMatchers("/**").permitAll() //일단 모든 url에 대해서 접근할 수 있도록 허용
+                .antMatchers("/admin/**").hasRole("ADMIN") //관리자만 접근가능
+                .antMatchers("/user/myinfo", "/report").hasRole("MEMBER"); //유저만 접근 가능
     }
 
     @Override
