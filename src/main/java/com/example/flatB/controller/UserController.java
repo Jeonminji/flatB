@@ -5,7 +5,6 @@ import com.example.flatB.common.DefaultRes;
 import com.example.flatB.common.ResponseMessage;
 import com.example.flatB.common.StatusCode;
 import com.example.flatB.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @AllArgsConstructor
 public class UserController {
-//    private MemberService memberService;
   private final UserService userService;
 
     // 메인 페이지
