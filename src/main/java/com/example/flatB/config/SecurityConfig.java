@@ -1,7 +1,6 @@
 package com.example.flatB.config;
 
 import com.example.flatB.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
 
@@ -37,14 +35,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 // 페이지 권한 설정
-                .httpBasic().disable() //http basic 인증 방법 비활성화
-                .formLogin().disable() //form login 비활성화
-                .csrf().disable() //csrf 관련 설정 비활성화
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/myinfo").hasRole("MEMBER")
-                .antMatchers("/admin/**").hasRole("ADMIN") //관리자만 접근가능
-                .antMatchers("/user/myinfo", "/report").hasRole("MEMBER"); //유저만 접근 가능
-                .antMatchers("/**").permitAll()
+//                .httpBasic().disable() //http basic 인증 방법 비활성화
+//                .formLogin().disable() //form login 비활성화
+//                .csrf().disable() //csrf 관련 설정 비활성화
+                .antMatchers("/admin/**").hasRole("ADMIN") //관리자만 접근 가능
+                .antMatchers("/user/myinfo", "/report").hasRole("MEMBER") //유저만 접근 가능
+                .antMatchers("/**").permitAll() //누구나 접근 가능
 
                 .and() // 로그인 설정
                 .formLogin()
