@@ -16,17 +16,76 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
-@RestController
-@RequestMapping(value = "/user")
-@RequiredArgsConstructor
+@Controller
+@AllArgsConstructor
 public class UserController {
+//    private MemberService memberService;
+  private final UserService userService;
 
-    private final UserService userService;
+    // 메인 페이지
+    @GetMapping("/")
+    public String index() {
+        return "/index";
+    }
 
-    //회원가입
-    @PostMapping("signup")
+    // 회원가입 페이지
+//    @GetMapping("/user/signup")
+//    public String dispSignup() {
+//        return "/signup";
+//    }
+
+    // 회원가입 처리
+//    @PostMapping("/user/signup")
+//    public String execSignup(MemberDto memberDto) {
+//        memberService.joinUser(memberDto);
+//
+//        return "redirect:/user/login";
+//    }
+
+    // 로그인 페이지
+    @GetMapping("/user/login")
+    public String dispLogin() {
+        return "/login";
+    }
+
+    // 로그인 결과 페이지
+//    @GetMapping("/user/login/result")
+//    public String dispLoginResult() {
+//        return "/loginSuccess";
+//    }
+
+    // 로그아웃 결과 페이지
+    @GetMapping("/user/logout/result")
+    public String dispLogout() {
+        return "/";
+    }
+
+    // 접근 거부 페이지
+    @GetMapping("/user/denied")
+    public String dispDenied() {
+        return "/denied";
+    }
+
+    // 내 정보 페이지
+    @GetMapping("/user/info")
+    public String dispMyInfo() {
+        return "/myinfo";
+    }
+
+    // 어드민 페이지
+    @GetMapping("/admin")
+    public String dispAdmin() {
+        return "/admin";
+    }
+  
+   //회원가입
+    @PostMapping("/user/signup")
     public ResponseEntity joinUser(@RequestBody @Valid UserDto userDto, Errors errors) {
         if(errors.hasErrors()) { //유효성 검사
             Map<String, String> error = new HashMap<>();
@@ -44,13 +103,13 @@ public class UserController {
     }
 
     //회원가입 시 아이디 중복 확인
-    @GetMapping("signup/userId/{userId}/exists")
+    @GetMapping("/user/signup/userId/{userId}/exists")
     public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userId) {
         return ResponseEntity.ok(userService.checkUserIdDuplicate(userId));
     }
 
     //회원가입 시 닉네임 중복 확인
-    @GetMapping("signup/nickname/{nickname}/exists")
+    @GetMapping("/user/signup/nickname/{nickname}/exists")
     public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
         return ResponseEntity.ok(userService.checkNicknameDuplicate(nickname));
     }
