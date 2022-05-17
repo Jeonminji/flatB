@@ -206,7 +206,7 @@ const RegisterPage =(props) =>{
           try {
             await axios({
               method: "GET",
-              url: '/user/signup/'+ userId
+              url: '/user/signup/userId/'+ userId+'/exists'
             }).then((res) => {
                 if (res.data === false) {
                     setIdCheck(true);
@@ -231,7 +231,7 @@ const RegisterPage =(props) =>{
           try {
             await axios({
               method: "GET",
-              url: '/user/signup/'+nickname+'/exists'
+              url: '/user/signup/ninkname/'+nickname+'/exists'
             })
               .then((res) => {
                 if (res.data === false) {
