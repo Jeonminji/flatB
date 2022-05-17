@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 
 
 import Header from '../components/Header'; 
@@ -6,6 +6,58 @@ import "./declarationPage.css";
 
 
 const Declaration=(props) =>{ 
+
+    const [declar_category, set_declar_category] = useState('');
+    const [is_declar_category, set_is_declar_category] = useState(false);
+    
+    const onChangeDeclar_category = useCallback((e) => {
+        const declar_category_current=e.target.value;
+        set_declar_category(declar_category_current);
+
+        if(declar_category_current === "신고게시판"){
+            set_is_declar_category(false);
+        }
+        else{
+            set_is_declar_category(true);
+        }
+        
+    },[]);
+
+
+    // 신고유형
+    const [declar_type, set_declar_type] = useState('');
+    const [is_declar_type, set_is_declar_type] = useState(false);
+    
+    const onChangeDeclar_type = useCallback((e) => {
+        const declar_type_current=e.target.value;
+        set_declar_type(declar_type_current);
+
+        if(declar_type_current === "declaration_type"){
+            set_is_declar_type(false);
+        }
+        else{
+            set_is_declar_type(true);
+        }
+        
+    },[]);
+
+        // 신고 내용
+        const [declar_content, set_declar_content] = useState('');
+        const [is_declar_content, set_is_declar_content] = useState(false);
+        
+        const onChangeDeclar_content = useCallback((e) => {
+            const declar_content_current=e.target.value;
+            set_declar_content(declar_content_current);
+    
+            if(declar_content_current === ""){
+                set_is_declar_content(false);
+            }
+            else{
+                set_is_declar_content(true);
+            }
+            
+        },[]);
+
 
     return ( 
        <div>
