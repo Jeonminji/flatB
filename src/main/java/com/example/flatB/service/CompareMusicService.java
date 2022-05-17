@@ -37,4 +37,16 @@ public class CompareMusicService {
         List<CompareMusicEntity> compareMusicEntities = compareMusicRepository.findAllByMusicName("Bugs");
         return compareMusicEntities;
     }
+
+    public List<CompareMusicEntity> getFlo() {
+        jsoupComponent.getFlo();
+        List<CompareMusicEntity> compareMusicEntities = compareMusicRepository.findAllByMusicName("Flo");
+        return compareMusicEntities;
+    }
+
+    public List<CompareMusicEntity> getYoutubeMusic() {
+        jsoupComponent.getYoutubeMusic();
+        List<CompareMusicEntity> compareMusicEntities = compareMusicRepository.findAllByMusicName("YoutubeMusic");
+        return compareMusicEntities;
+    }
 }
