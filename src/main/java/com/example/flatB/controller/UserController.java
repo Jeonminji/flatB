@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class UserController {
   private final UserService userService;
 
-    // 메인 페이지
+    // 메인페이지
     @GetMapping("/")
     public String index() {
         return "/index";
