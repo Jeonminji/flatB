@@ -86,29 +86,160 @@ public class JsoupComponent { //크롤링
     }
 
     public void getWavve() { //웨이브 동적크롤링 필요...
-        final String wavveUrl = "https://www.wavve.com/voucher";
-        Connection conn = Jsoup.connect(wavveUrl);
-        try {
-            Document document = conn.get();
-            getWavve(document);
-        } catch (IOException ignored) {
-            ignored.printStackTrace();
+//        final String wavveUrl = "https://www.wavve.com/voucher";
+//        Connection conn = Jsoup.connect(wavveUrl);
+//        try {
+//            Document document = conn.get();
+//            getWavve(document);
+//        } catch (IOException ignored) {
+//            ignored.printStackTrace();
+//        }
+        String[] ottPlan = {"Basic", "Standard", "Premium"};
+        String[] ottPrice = {"7,900원", "10,900원", "13,900원"};
+        String[] ottQuality = {"HD화질", "FHD화질", "최상위화질"};
+        String[] ottPlaybacknum = {"1", "2", "4"};
+
+        if(!compareOttRepository.existsByOttName("Wavve")) {
+            for (int i = 0; i < ottPlan.length; i++) {
+                CompareOttDto compareOttDto = CompareOttDto.builder().build();
+                compareOttDto.setOttName("Wavve");
+                compareOttDto.setOttPlan(ottPlan[i]);
+                compareOttDto.setOttPrice(ottPrice[i]);
+                compareOttDto.setOttQuality(ottQuality[i]);
+                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
+                compareOttRepository.save(compareOttDto.toEntity());
+            }
         }
     }
 
-    public void getWavve(Document document) {
-        System.out.println("웨이브 크롤링");
-        //System.out.println(document);
-        Elements elements = document.select("ul.product-group li.ticket-group-list span.product-name-box");
-        //System.out.println(elements);
+//    public void getWavve(Document document) {
+//        System.out.println("웨이브 크롤링");
+//        //System.out.println(document);
+//        Elements elements = document.select("ul.product-group li.ticket-group-list span.product-name-box");
+//        //System.out.println(elements);
+//
+//        /*for(int i = 0; i < elements.size(); i++) {
+//            Element e = elements.get(i);
+//            Elements content = e.select("span");
+//            System.out.println(content);
+//            System.out.println(e.select("p").text());
+//        }*/
+//
+//    }
 
-        /*for(int i = 0; i < elements.size(); i++) {
-            Element e = elements.get(i);
-            Elements content = e.select("span");
-            System.out.println(content);
-            System.out.println(e.select("p").text());
-        }*/
+    @Transactional
+    public void getTving() { //티빙
+//        final String tvingUrl = "";
+//        Connection conn = Jsoup.connect(tvingUrl);
+//        try {
+//            Document document = conn.get();
+//            getTving(document);
+//        } catch (IOException ignored) {
+//            ignored.printStackTrace();
+//        }
 
+        String[] ottPlan = {"베이직", "스탠다드", "프리미엄"};
+        String[] ottPrice = {"7,900원", "10,900원", "13,900원"};
+        String[] ottQuality = {"720p HD", "1080p FHD", "1080p FHD + 4K"};
+        String[] ottPlaybacknum = {"1", "2", "4"};
+
+        if(!compareOttRepository.existsByOttName("Tving")) { //db에 없으면 저장
+            for (int i = 0; i < ottPlan.length; i++) {
+                CompareOttDto compareOttDto = CompareOttDto.builder().build();
+                compareOttDto.setOttName("Tving");
+                compareOttDto.setOttPlan(ottPlan[i]);
+                compareOttDto.setOttPrice(ottPrice[i]);
+                compareOttDto.setOttQuality(ottQuality[i]);
+                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
+                compareOttRepository.save(compareOttDto.toEntity());
+            }
+        }
+    }
+
+    @Transactional
+    public void getWatcha() { //왓챠
+//        final String watchaUrl = "";
+//        Connection conn = Jsoup.connect(watchaUrl);
+//        try {
+//            Document document = conn.get();
+//            getWatcha(document);
+//        } catch (IOException ignored) {
+//            ignored.printStackTrace();
+//        }
+        String[] ottPlan = {"베이직", "프리미엄"};
+        String[] ottPrice = {"7,900원", "12,900원"};
+        String[] ottQuality = {"Full HD", "Ultra HD 4K"};
+        String[] ottPlaybacknum = {"1", "4"};
+
+        if(!compareOttRepository.existsByOttName("Watcha")) { //db에 없으면 저장
+            for (int i = 0; i < ottPlan.length; i++) {
+                CompareOttDto compareOttDto = CompareOttDto.builder().build();
+                compareOttDto.setOttName("Watcha");
+                compareOttDto.setOttPlan(ottPlan[i]);
+                compareOttDto.setOttPrice(ottPrice[i]);
+                compareOttDto.setOttQuality(ottQuality[i]);
+                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
+                compareOttRepository.save(compareOttDto.toEntity());
+            }
+        }
+    }
+
+    @Transactional
+    public void getDisneyplus() { //디즈니플러스
+//        final String disneyplusUrl = "";
+//        Connection conn = Jsoup.connect(disneyplusUrl);
+//        try {
+//            Document document = conn.get();
+//            getDisneyplus(document);
+//        } catch (IOException ignored) {
+//            ignored.printStackTrace();
+//        }
+
+        String[] ottPlan = {"월 9,900원", "연 99,000원"};
+        String[] ottPrice = {"9,900원", "99,900원"};
+        String[] ottQuality = {"4K UHD 및 HDR", "4K UHD 및 HDR"};
+        String[] ottPlaybacknum = {"4", "4"};
+
+        if(!compareOttRepository.existsByOttName("Disneyplus")) { //db에 없으면 저장
+            for (int i = 0; i < ottPlan.length; i++) {
+                CompareOttDto compareOttDto = CompareOttDto.builder().build();
+                compareOttDto.setOttName("Disneyplus");
+                compareOttDto.setOttPlan(ottPlan[i]);
+                compareOttDto.setOttPrice(ottPrice[i]);
+                compareOttDto.setOttQuality(ottQuality[i]);
+                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
+                compareOttRepository.save(compareOttDto.toEntity());
+            }
+        }
+    }
+
+    @Transactional
+    public void getLaftel() { //라프텔
+//        final String laftelUrl = "";
+//        Connection conn = Jsoup.connect(laftelUrl);
+//        try {
+//            Document document = conn.get();
+//            getLaftel(document);
+//        } catch (IOException ignored) {
+//            ignored.printStackTrace();
+//        }
+
+        String[] ottPlan = {"베이직", "프리미엄"};
+        String[] ottPrice = {"9,900원", "14,900원"};
+        String[] ottQuality = {"FHD", "FHD"};
+        String[] ottPlaybacknum = {"1", "4"};
+
+        if(!compareOttRepository.existsByOttName("Laftel")) { //db에 없으면 저장
+            for (int i = 0; i < ottPlan.length; i++) {
+                CompareOttDto compareOttDto = CompareOttDto.builder().build();
+                compareOttDto.setOttName("Laftel");
+                compareOttDto.setOttPlan(ottPlan[i]);
+                compareOttDto.setOttPrice(ottPrice[i]);
+                compareOttDto.setOttQuality(ottQuality[i]);
+                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
+                compareOttRepository.save(compareOttDto.toEntity());
+            }
+        }
     }
 
     /* Music */
@@ -257,6 +388,68 @@ public class JsoupComponent { //크롤링
                 compareMusicDto.setMusicPlandescription(description.get(0).text()); //요금제 설명
                 compareMusicDto.setMusicPrice(price.text()); //가격
 
+                compareMusicRepository.save(compareMusicDto.toEntity());
+            }
+        }
+    }
+
+    @Transactional
+    public void getFlo() { //플로
+//        final String floUrl = "https://www.music-flo.com/purchase/voucher";
+//        Connection conn = Jsoup.connect(floUrl);
+//        try {
+//            Document document = conn.get();
+//            getFlo(document);
+//        } catch (IOException ignored) {
+//            ignored.printStackTrace();
+//        }
+        String[] musicPlan = {"무제한 듣기+오프라인 재생", "무제한 듣기+오프라인 재생", "무제한 듣기+오프라인 재생",
+        "무제한 듣기", "무제한 듣기", "무제한 듣기", "300회 듣기", "모바일 무제한 듣기", "모바일 무제한 듣기", "모바일 무제한 듣기"};
+        String[] musicPlandescription = {"기기제한 없음, 무제한 스트리밍, 오프라인 재생",
+                "기기제한 없음, 무제한 스트리밍, 오프라인 재생", "기기제한 없음, 무제한 스트리밍, 오프라인 재생",
+        "기기제한 없음, 무제한 듣기", "기기제한 없음, 무제한 듣기", "기기제한 없음, 무제한 듣기", "기기제한 없음, 횟수 제한",
+        "모바일 전용, 무제한 스트리밍", "모바일 전용, 무제한 스트리밍", "모바일 전용, 무제한 스트리밍"};
+        String[] musicPrice = {"정기결제 11,000원", "T멤버십 최소 100원 6개월 10,900원", "1개월권 11,000원",
+                "정기결제 8,000원", "T멤버십 최소 100원 6개월 7,900원", "1개월권 8,000원", "1개월권 4,800원",
+                "정기결제 7,000원", "T멤버십 최소 100원 6개월 6,900원", "1개월권 7,000원"};
+        String[] musicDiscount = {"10,900원", "100원", "", "7,900원", "100원", "", "", "6,900원", "100원", ""};
+
+        if(!compareMusicRepository.existsByMusicName("Flo")) { //db에 없으면 저장
+            for(int i = 0; i< musicPlan.length; i++) {
+                CompareMusicDto compareMusicDto = CompareMusicDto.builder().build();
+                compareMusicDto.setMusicName("Flo");
+                compareMusicDto.setMusicPlan(musicPlan[i]);
+                compareMusicDto.setMusicPlandescription(musicPlandescription[i]);
+                compareMusicDto.setMusicPrice(musicPrice[i]);
+                compareMusicDto.setMusicDiscount(musicDiscount[i]);
+                compareMusicRepository.save(compareMusicDto.toEntity());
+            }
+        }
+    }
+
+    @Transactional
+    public void getYoutubeMusic() { //유튜브뮤직
+//       final String youtubeMusicUrl = "";
+//        Connection conn = Jsoup.connect(youtubeMusicUrl);
+//        try {
+//            Document document = conn.get();
+//            getYoutubeMusic(document);
+//        } catch (IOException ignored) {
+//            ignored.printStackTrace();
+//        }
+        String[] musicPlan = {"월 8,690원"};
+        String[] musicPlandescription = {"1개월 무료체험"};
+        String[] musicPrice = {"8,690원"};
+        String[] musicDiscount = {""};
+
+        if(!compareMusicRepository.existsByMusicName("YoutubeMusic")) { //db에 없으면 저장
+            for(int i = 0; i< musicPlan.length; i++) {
+                CompareMusicDto compareMusicDto = CompareMusicDto.builder().build();
+                compareMusicDto.setMusicName("YoutubeMusic");
+                compareMusicDto.setMusicPlan(musicPlan[i]);
+                compareMusicDto.setMusicPlandescription(musicPlandescription[i]);
+                compareMusicDto.setMusicPrice(musicPrice[i]);
+                compareMusicDto.setMusicDiscount(musicDiscount[i]);
                 compareMusicRepository.save(compareMusicDto.toEntity());
             }
         }
