@@ -8,6 +8,24 @@ import "./declarationPage.css";
 
 const Declaration=(props) =>{ 
 
+    // 신고 닉네임
+    const [declar_nickname, set_declar_nickname] = useState('');
+    const [is_declar_nickname, set_is_declar_nickname] = useState(false);
+    
+    const onChangeDeclar_nickname = useCallback((e) => {
+        const declar_nickname_current=e.target.value;
+        set_declar_nickname(declar_nickname_current);
+
+        if(declar_nickname_current === ""){
+            set_is_declar_nickname(false);
+        }
+        else{
+            set_is_declar_nickname(true);
+        }
+        
+    },[]);
+
+    // 신고 게시판  
     const [declar_category, set_declar_category] = useState('');
     const [is_declar_category, set_is_declar_category] = useState(false);
     
