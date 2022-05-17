@@ -40,7 +40,14 @@ public class CompareMusicController {
             case "bugs":
                 musicList = compareMusicService.getBugs();
                 break;
+            case "flo":
+                musicList = compareMusicService.getFlo();
+                break;
+            case "youtubemusic":
+                musicList = compareMusicService.getYoutubeMusic();
+                break;
         }
+
         if (musicList.isEmpty()) {
             return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.CRAWLLING_FAIL),
                     HttpStatus.BAD_REQUEST);

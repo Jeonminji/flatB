@@ -5,7 +5,6 @@ import com.example.flatB.common.ResponseMessage;
 import com.example.flatB.common.StatusCode;
 import com.example.flatB.domain.entity.CompareOttEntity;
 import com.example.flatB.service.CompareOttService;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,20 @@ public class CompareOttController {
             case "wavve":
                 ottList = compareOttService.getWavve();
                 break;
+            case "tving":
+                ottList = compareOttService.getTving();
+                break;
+            case "watcha":
+                ottList = compareOttService.getWatcha();
+                break;
+            case "disneyplus":
+                ottList = compareOttService.getDisneyplus();
+                break;
+            case "laftel":
+                ottList = compareOttService.getLaftel();
+                break;
         }
+
         if(ottList.isEmpty()) {
             return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.CRAWLLING_FAIL),
                     HttpStatus.BAD_REQUEST);
