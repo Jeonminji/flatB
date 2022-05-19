@@ -1,5 +1,6 @@
 package com.example.flatB.domain.entity;
 
+import com.example.flatB.domain.Role;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,9 +36,13 @@ public class UserEntity implements UserDetails {
     @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")
     private LocalDateTime join_date;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @Builder
     public UserEntity(String userId, String password, String name, String nickname,
-                      String contact, String age, String gender, LocalDateTime join_date) {
+                      String contact, String age, String gender, LocalDateTime join_date, Role role) {
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -46,6 +51,11 @@ public class UserEntity implements UserDetails {
         this.age = age;
         this.gender = gender;
         this.join_date = LocalDateTime.now();
+        this.role = Role.MEMBER;
+    }
+
+    public String getRoleValue() {
+        return this.role.getValue();
     }
 
     @Override
