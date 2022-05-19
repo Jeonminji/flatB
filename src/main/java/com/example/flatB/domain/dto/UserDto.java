@@ -1,10 +1,12 @@
 package com.example.flatB.domain.dto;
 
+import com.example.flatB.domain.Role;
 import com.example.flatB.domain.entity.UserEntity;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Builder
@@ -37,6 +39,8 @@ public class UserDto {
 
     private LocalDateTime join_date;
 
+    private Role role;
+
     public UserEntity toEntity() {
         UserEntity userEntity = UserEntity.builder()
                 .userId(userId)
@@ -47,8 +51,32 @@ public class UserDto {
                 .age(age)
                 .gender(gender)
                 .join_date(LocalDateTime.now())
+                .role(role.MEMBER)
                 .build();
         return userEntity;
     }
 
+    //로그인한 사용자 정보 세션에 저장하기 위한 클래스
+    @Getter
+    public static class Response implements Serializable {
+
+        private String userId;
+        private String name;
+        private String nickname;
+        private String contact;
+        private String age;
+        private String gender;
+        private LocalDateTime join_date;
+
+        // Entity -> Dto
+        public Response(UserEntity user) {
+            this.userId = user.getUserId();
+            this.name = user.getName();
+            this.nickname = user.getNickname();
+            this.contact = user.getContact();
+            this.age = user.getAge();
+            this.gender = user.getGender();
+            this.join_date = user.getJoin_date();
+        }
+    }
 }
