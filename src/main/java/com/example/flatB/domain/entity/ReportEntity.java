@@ -39,12 +39,4 @@ public class ReportEntity {
     @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")
     private LocalDateTime date;
 
-//    @Builder
-//    public BoardEntity(Integer boardNo, String nickname, String note, String type, String content, String writeId) {
-//        this.boardNo = boardNo;
-//        this.nickname = nickname;
-//        this.note = note;
-//        this.type = type;
-//        this.content = content;
-//    }
 }
