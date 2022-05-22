@@ -33,11 +33,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .csrf().ignoringAntMatchers("/**") //해당 경로 csrf 보호 대상에서 제외
+                .and()
+
                 // 페이지 권한 설정
-//                .httpBasic().disable() //http basic 인증 방법 비활성화
-//                .formLogin().disable() //form login 비활성화
-//                .csrf().disable() //csrf 관련 설정 비활성화
+                .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN") //관리자만 접근 가능
                 .antMatchers("/user/myinfo", "/report").hasRole("MEMBER") //유저만 접근 가능
                 .antMatchers("/**").permitAll() //누구나 접근 가능
@@ -45,6 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and() // 로그인 설정
                 .formLogin()
                 .loginPage("/user/login")
+//                .loginProcessingUrl("/user/loginProc") //Security에서 해당 주소로 오는 요청을 낚아채서 수행
+//                .failureHandler(customFailureHandler)
                 .defaultSuccessUrl("/")
                 .permitAll()
 
