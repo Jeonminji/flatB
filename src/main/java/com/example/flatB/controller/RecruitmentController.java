@@ -48,7 +48,9 @@ public class RecruitmentController {
 
     //플랫폼별 인원 모집 글 조회
     @GetMapping("/{platformname}")
-    public ResponseEntity getRecruitmentBoards(@PageableDefault(size = 8) Pageable pageable, @PathVariable String platformname) {
+    public ResponseEntity getRecruitmentBoards(@PageableDefault(size = 8) Pageable pageable,
+                                               @PathVariable String platformname,
+                                               @RequestParam(required = false) boolean recruiting) {
         String ott_platformname = "";
         switch (platformname) {
             case "netflix":
@@ -71,7 +73,13 @@ public class RecruitmentController {
                 break;
         }
 
-        List<RecruitmentEntity> recruitmentEntities = recruitmentService.getRecruitmentBoards(ott_platformname);
+        List<RecruitmentEntity> recruitmentEntities;
+        if (recruiting) //모집중인 글만 보기 (모집중 필터)
+            recruitmentEntities =
+                    recruitmentService.getRecruitingBoard(ott_platformname);
+        else
+            recruitmentEntities =
+                    recruitmentService.getRecruitmentBoards(ott_platformname);
 
         List<RecruitmentResponseDto> boardList =
                 RecruitmentResponseDto.ofEntities(recruitmentEntities);
@@ -82,8 +90,6 @@ public class RecruitmentController {
 
         return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, responseDtos), HttpStatus.OK);
     }
-
-    //모집 중 필터
 
     //글 상세조회
     @GetMapping("/detail/{boardNo}")
