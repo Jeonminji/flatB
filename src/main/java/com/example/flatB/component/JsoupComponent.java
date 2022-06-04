@@ -5,16 +5,30 @@ import com.example.flatB.domain.dto.CompareOttDto;
 import com.example.flatB.repository.CompareMusicRepository;
 import com.example.flatB.repository.CompareOttRepository;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 
 @Component
@@ -22,6 +36,43 @@ import java.io.IOException;
 public class JsoupComponent { //크롤링
     private final CompareOttRepository compareOttRepository;
     private final CompareMusicRepository compareMusicRepository;
+    private WebDriver driver;
+
+    //크롤링에 필요한 로그인 아이디, 비밀번호
+    @Value("${tving.id}")
+    private String tvingId;
+    @Value("${tving.pwd}")
+    private String tvingPwd;
+
+    @Value("${watcha.id}")
+    private String watchaId;
+    @Value("${watcha.pwd}")
+    private String watchaPwd;
+
+    @Value("${laftel.id}")
+    private String laftelId;
+    @Value("${laftel.pwd}")
+    private String laftelPwd;
+
+
+    public void setup() { //셀레니움 설정
+        Path path = Paths.get(System.getProperty("user.dir"), ("src/main/resources/chromedriver.exe"));
+        System.setProperty("webdriver.chrome.driver", path.toString()); //크롬 드라이버 셋팅 (드라이버 설치한 경로 입력)
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); //크롬창안띄움
+        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--disable-popup-blocking"); // 팝업 무시
+        options.addArguments("--disable-default-apps"); // 기본앱 사용안함
+        options.addArguments("--disable-gpu"); //GPU를 사용하지 않음, Linux에서 headless를 사용하는 경우 필요함.
+        options.addArguments("--no-sandbox"); // sandbox 프로세스 사용하지 않음, Linux에서 headless를 사용하는 경우 필요함.
+
+        try {
+            driver = new ChromeDriver(options);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /* OTT */
     @Transactional
@@ -85,129 +136,179 @@ public class JsoupComponent { //크롤링
             return "UHD";
     }
 
-    public void getWavve() { //웨이브 동적크롤링 필요...
-//        final String wavveUrl = "https://www.wavve.com/voucher";
-//        Connection conn = Jsoup.connect(wavveUrl);
-//        try {
-//            Document document = conn.get();
-//            getWavve(document);
-//        } catch (IOException ignored) {
-//            ignored.printStackTrace();
-//        }
-        String[] ottPlan = {"Basic", "Standard", "Premium"};
-        String[] ottPrice = {"7,900원", "10,900원", "13,900원"};
-        String[] ottQuality = {"HD화질", "FHD화질", "최상위화질"};
-        String[] ottPlaybacknum = {"1", "2", "4"};
+    @Transactional
+    public void getWavve() { //웨이브
+        if(!compareOttRepository.existsByOttName("Wavve")) { //db에 없으면 저장
+            setup();
 
-        if(!compareOttRepository.existsByOttName("Wavve")) {
-            for (int i = 0; i < ottPlan.length; i++) {
-                CompareOttDto compareOttDto = CompareOttDto.builder().build();
-                compareOttDto.setOttName("Wavve");
-                compareOttDto.setOttPlan(ottPlan[i]);
-                compareOttDto.setOttPrice(ottPrice[i]);
-                compareOttDto.setOttQuality(ottQuality[i]);
-                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
-                compareOttRepository.save(compareOttDto.toEntity());
+            try {
+                final String url = "https://www.wavve.com/voucher/index.html";
+
+                driver.get(url);    //브라우저에서 url로 이동한다.
+                Thread.sleep(1000); //브라우저 로딩될때까지 잠시 기다린다.
+
+                List<WebElement> elements = driver.findElements(By.className("product-name"));
+                List<WebElement> discriptions = driver.findElements(By.className("product-discription"));
+                List<WebElement> prices = driver.findElements(By.className("product-price"));
+
+                for (int i = 0; i < elements.size(); i++) {
+                    String discription[] = discriptions.get(i).getText().split(", ");
+                    String price[] = prices.get(i).getText().split(" ");
+                    String finalPrice = price[0];
+                    if (price.length > 1)
+                        finalPrice = price[1];
+
+                    CompareOttDto compareOttDto = CompareOttDto.builder().build();
+                    compareOttDto.setOttName("Wavve");
+                    compareOttDto.setOttPlan(elements.get(i).getText());
+                    compareOttDto.setOttPlaybacknum(discription[0]);
+                    compareOttDto.setOttQuality(discription[1]);
+                    compareOttDto.setOttEtc(discription[2]);
+                    compareOttDto.setOttPrice(finalPrice);
+                    compareOttRepository.save(compareOttDto.toEntity());
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+            down();
         }
     }
 
-//    public void getWavve(Document document) {
-//        System.out.println("웨이브 크롤링");
-//        //System.out.println(document);
-//        Elements elements = document.select("ul.product-group li.ticket-group-list span.product-name-box");
-//        //System.out.println(elements);
-//
-//        /*for(int i = 0; i < elements.size(); i++) {
-//            Element e = elements.get(i);
-//            Elements content = e.select("span");
-//            System.out.println(content);
-//            System.out.println(e.select("p").text());
-//        }*/
-//
-//    }
-
     @Transactional
     public void getTving() { //티빙
-//        final String tvingUrl = "";
-//        Connection conn = Jsoup.connect(tvingUrl);
-//        try {
-//            Document document = conn.get();
-//            getTving(document);
-//        } catch (IOException ignored) {
-//            ignored.printStackTrace();
-//        }
-
-        String[] ottPlan = {"베이직", "스탠다드", "프리미엄"};
-        String[] ottPrice = {"7,900원", "10,900원", "13,900원"};
-        String[] ottQuality = {"720p HD", "1080p FHD", "1080p FHD + 4K"};
-        String[] ottPlaybacknum = {"1", "2", "4"};
-
         if(!compareOttRepository.existsByOttName("Tving")) { //db에 없으면 저장
-            for (int i = 0; i < ottPlan.length; i++) {
-                CompareOttDto compareOttDto = CompareOttDto.builder().build();
-                compareOttDto.setOttName("Tving");
-                compareOttDto.setOttPlan(ottPlan[i]);
-                compareOttDto.setOttPrice(ottPrice[i]);
-                compareOttDto.setOttQuality(ottQuality[i]);
-                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
-                compareOttRepository.save(compareOttDto.toEntity());
+            setup();
+
+            try {
+                final String url = "https://user.tving.com/pc/user/otherLogin.tving?loginType=20&from=pc&rtUrl=https%3A%2F%2Fwww.tving.com&csite=&isAuto=false";
+
+                //login 페이지
+                driver.get(url);    //브라우저에서 url로 이동한다.
+                Thread.sleep(1000); //브라우저 로딩될때까지 잠시 기다린다.
+
+                driver.findElement(By.xpath("//*[@id=\"a\"]")).sendKeys(tvingId);
+                driver.findElement(By.xpath("//*[@id=\"b\"]")).sendKeys(tvingPwd);
+                driver.findElement(By.xpath("//*[@id=\"doLoginBtn\"]")).click();
+                System.out.println("로그인 성공 = " + driver.getCurrentUrl());
+
+                driver.navigate().to("https://www.tving.com/"); //메인으로 이동
+                System.out.println("메인 = " + driver.getCurrentUrl());
+                driver.navigate().to("https://www.tving.com/membership/tving"); //이용권 페이지로 이동
+                System.out.println("이용권 = " + driver.getCurrentUrl());
+
+                Thread.sleep(1000);
+                for (int i = 2; i < 5; i++) {
+                    CompareOttDto compareOttDto = CompareOttDto.builder().build();
+
+                    WebElement plan = driver.findElement(By.xpath("//*[@id=\"__next\"]/main/section/section/section[2]/section[2]/table/thead/tr/th[" + i + "]")); //요금제명
+                    WebElement playbacknum = driver.findElement(By.xpath("//*[@id=\"__next\"]/main/section/section/section[2]/section[2]/table/tbody/tr[2]/th[" + i + "]")); //동시재생수
+                    WebElement quality = driver.findElement(By.xpath("//*[@id=\"__next\"]/main/section/section/section[2]/section[2]/table/tbody/tr[3]/th[" + i + "]")); //화질
+                    WebElement price = driver.findElement(By.xpath("//*[@id=\"__next\"]/main/section/section/section[2]/section[2]/table/tbody/tr[7]/th[" + i + "]")); //가격
+
+                    compareOttDto.setOttName("Tving");
+                    compareOttDto.setOttPlan(plan.getText());
+                    compareOttDto.setOttPrice(price.getText());
+                    compareOttDto.setOttQuality(quality.getText());
+                    compareOttDto.setOttPlaybacknum(playbacknum.getText());
+                    compareOttRepository.save(compareOttDto.toEntity());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+            down();
         }
     }
 
     @Transactional
     public void getWatcha() { //왓챠
-//        final String watchaUrl = "";
-//        Connection conn = Jsoup.connect(watchaUrl);
-//        try {
-//            Document document = conn.get();
-//            getWatcha(document);
-//        } catch (IOException ignored) {
-//            ignored.printStackTrace();
-//        }
-        String[] ottPlan = {"베이직", "프리미엄"};
-        String[] ottPrice = {"7,900원", "12,900원"};
-        String[] ottQuality = {"Full HD", "Ultra HD 4K"};
-        String[] ottPlaybacknum = {"1", "4"};
+        if (!compareOttRepository.existsByOttName("Watcha")) { //db에 없으면 저장
+            setup();
 
-        if(!compareOttRepository.existsByOttName("Watcha")) { //db에 없으면 저장
-            for (int i = 0; i < ottPlan.length; i++) {
-                CompareOttDto compareOttDto = CompareOttDto.builder().build();
-                compareOttDto.setOttName("Watcha");
-                compareOttDto.setOttPlan(ottPlan[i]);
-                compareOttDto.setOttPrice(ottPrice[i]);
-                compareOttDto.setOttQuality(ottQuality[i]);
-                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
-                compareOttRepository.save(compareOttDto.toEntity());
+            try {
+                final String url = "https://watcha.com/sign_in";
+
+                //login 페이지
+                driver.get(url);    //브라우저에서 url로 이동한다.
+                Thread.sleep(1000); //브라우저 로딩될때까지 잠시 기다린다.
+
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/main/div[1]/main/div/form/div[1]/input")).sendKeys(watchaId);
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/main/div[1]/main/div/form/div[2]/input")).sendKeys(watchaPwd);
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/main/div[1]/main/div/form/div[3]/button")).click();
+                System.out.println("로그인 성공 = " + driver.getCurrentUrl());
+
+                Thread.sleep(5000);
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/main/div[1]/section/ul/li[1]/button")).click();
+                System.out.println("프로필 = " + driver.getCurrentUrl());
+
+                Thread.sleep(5000);
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/header[1]/div/button")).click(); //이용권 선택
+                System.out.println("이용권 = " + driver.getCurrentUrl());
+
+                Thread.sleep(5000);
+                List<WebElement> plans = driver.findElements(By.className("css-1afiy62")); //요금제명
+                WebElement price1 = driver.findElement(By.cssSelector("li.css-4p3s42 > div.css-0")); //가격
+                WebElement playbacknum1 = driver.findElements(By.className("css-4p3s42")).get(1); //동시재생수
+                WebElement quality1 = driver.findElements(By.className("css-4p3s42")).get(2); //화질
+
+                WebElement price2 = driver.findElement(By.cssSelector("li.css-g063x9 > div.css-0"));
+                WebElement playbacknum2 = driver.findElements(By.className("css-g063x9")).get(1);
+                WebElement quality2 = driver.findElements(By.className("css-g063x9")).get(2);
+
+                for (int i = 0; i < 2; i++) {
+                    CompareOttDto compareOttDto = CompareOttDto.builder().build();
+                    compareOttDto.setOttName("Watcha");
+                    if (i == 0) {
+                        compareOttDto.setOttPlan(plans.get(0).getText());
+                        compareOttDto.setOttPrice(price1.getText());
+                        compareOttDto.setOttQuality(quality1.getText());
+                        compareOttDto.setOttPlaybacknum(playbacknum1.getText());
+                    } else {
+                        compareOttDto.setOttPlan(plans.get(1).getText());
+                        compareOttDto.setOttPrice(price2.getText());
+                        compareOttDto.setOttQuality(quality2.getText());
+                        compareOttDto.setOttPlaybacknum(playbacknum2.getText());
+                    }
+                    compareOttRepository.save(compareOttDto.toEntity());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+            down();
         }
     }
 
     @Transactional
     public void getDisneyplus() { //디즈니플러스
-//        final String disneyplusUrl = "";
-//        Connection conn = Jsoup.connect(disneyplusUrl);
-//        try {
-//            Document document = conn.get();
-//            getDisneyplus(document);
-//        } catch (IOException ignored) {
-//            ignored.printStackTrace();
-//        }
+        final String disneyplusUrl = "https://www.disneyplus.com/ko-kr/welcome/stream-now?cid=DSS-Search-Google-71700000088460638-&s_kwcid=AL%218468%213%21584589737503%21p%21%21g%21%21%EB%94%94%EC%A6%88%EB%8B%88&gclid=Cj0KCQjw1tGUBhDXARIsAIJx01kTAxMQtYajZeApxapQ76u5-V2OFTTwNuf2eJPuCPozituDP85vqmkaAqvZEALw_wcB&gclsrc=aw.ds";
+        Connection conn = Jsoup.connect(disneyplusUrl);
+        try {
+            Document document = conn.get();
+            getDisneyplus(document);
+        } catch (IOException ignored) {
+            ignored.printStackTrace();
+        }
+    }
 
-        String[] ottPlan = {"월 9,900원", "연 99,000원"};
-        String[] ottPrice = {"9,900원", "99,900원"};
-        String[] ottQuality = {"4K UHD 및 HDR", "4K UHD 및 HDR"};
-        String[] ottPlaybacknum = {"4", "4"};
-
+    public void getDisneyplus(Document document) {
         if(!compareOttRepository.existsByOttName("Disneyplus")) { //db에 없으면 저장
-            for (int i = 0; i < ottPlan.length; i++) {
+            Elements elements = document.select("li.grid-item h3");
+            Elements elements1 = document.select("li.grid-item h4");
+            Elements elements2 = document.select("li.grid-item p.medium");
+
+            String quality = elements2.eq(2).text();
+            if(quality.contains("화질"))
+                quality = "4K UHD 및 HDR";
+
+            for (int i = 0; i < 2; i++) {
                 CompareOttDto compareOttDto = CompareOttDto.builder().build();
                 compareOttDto.setOttName("Disneyplus");
-                compareOttDto.setOttPlan(ottPlan[i]);
-                compareOttDto.setOttPrice(ottPrice[i]);
-                compareOttDto.setOttQuality(ottQuality[i]);
-                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
+                compareOttDto.setOttPrice(elements.eq(i).text()); //요금제 가격
+                compareOttDto.setOttQuality(quality); //화질
+                compareOttDto.setOttPlaybacknum(elements1.eq(1).text().substring(3, 4)); //동시재생수
                 compareOttRepository.save(compareOttDto.toEntity());
             }
         }
@@ -215,36 +316,61 @@ public class JsoupComponent { //크롤링
 
     @Transactional
     public void getLaftel() { //라프텔
-//        final String laftelUrl = "";
-//        Connection conn = Jsoup.connect(laftelUrl);
-//        try {
-//            Document document = conn.get();
-//            getLaftel(document);
-//        } catch (IOException ignored) {
-//            ignored.printStackTrace();
-//        }
+        if (!compareOttRepository.existsByOttName("Laftel")) { //db에 없으면 저장
+            setup();
 
-        String[] ottPlan = {"베이직", "프리미엄"};
-        String[] ottPrice = {"9,900원", "14,900원"};
-        String[] ottQuality = {"FHD", "FHD"};
-        String[] ottPlaybacknum = {"1", "4"};
+            try {
+                final String url = "https://laftel.net/auth/email";
 
-        if(!compareOttRepository.existsByOttName("Laftel")) { //db에 없으면 저장
-            for (int i = 0; i < ottPlan.length; i++) {
-                CompareOttDto compareOttDto = CompareOttDto.builder().build();
-                compareOttDto.setOttName("Laftel");
-                compareOttDto.setOttPlan(ottPlan[i]);
-                compareOttDto.setOttPrice(ottPrice[i]);
-                compareOttDto.setOttQuality(ottQuality[i]);
-                compareOttDto.setOttPlaybacknum(ottPlaybacknum[i]);
-                compareOttRepository.save(compareOttDto.toEntity());
+                //login 페이지
+                driver.get(url); //브라우저에서 url로 이동한다.
+                Thread.sleep(1000); //브라우저 로딩될때까지 잠시 기다린다.
+
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[1]/div/form/div[1]/div/input")).sendKeys(laftelId);
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[1]/div/form/div[2]/div/input")).sendKeys(laftelPwd);
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[1]/div/form/button")).click();
+                System.out.println("로그인 성공 = " + driver.getCurrentUrl());
+
+                Thread.sleep(2000);
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[1]/div/div[2]/div[1]")).click(); //프로필 선택
+                System.out.println("프로필 = " + driver.getCurrentUrl());
+
+                WebDriverWait wait = new WebDriverWait(driver, 5); //브라우저 로딩될때까지 잠시 기다린다.
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div[1]/div/div/div[2]/a[4]")));
+
+                driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[1]/div/div/div[2]/a[4]")).click(); //멤버십 페이지로 이동
+                System.out.println("이용권 = " + driver.getCurrentUrl());
+
+                Thread.sleep(5000);
+                for (int i = 1; i < 3; i++) {
+                    CompareOttDto compareOttDto = CompareOttDto.builder().build();
+
+                    WebElement plans = driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[2]/main/div[1]/div[" + i + "]/h2")); //요금제명
+                    String plan = String.join(" ", plans.getText().split("\n"));
+                    WebElement price = driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[2]/main/div[1]/div[" + i + "]/div[1]/span")); //가격
+                    WebElement etc = driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[2]/main/div[1]/div[" + i + "]/div[1]/div/span")); //기타
+                    WebElement playbacknum = driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[2]/main/div[1]/div[" + i + "]/div[2]/div[2]/span")); //동시재생수
+                    WebElement quality = driver.findElement(By.xpath("//*[@id=\"root\"]/div[1]/div[2]/main/div[1]/div[" + i + "]/div[2]/div[5]/span")); //화질
+
+                    compareOttDto.setOttName("Laftel");
+                    compareOttDto.setOttPlan(plan);
+                    compareOttDto.setOttPrice(price.getText());
+                    compareOttDto.setOttQuality(quality.getText());
+                    compareOttDto.setOttPlaybacknum(playbacknum.getText());
+                    compareOttDto.setOttEtc(etc.getText());
+                    compareOttRepository.save(compareOttDto.toEntity());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+            down();
         }
     }
 
     /* Music */
     @Transactional
-    public void getMelon() { //멜론 크롤링
+    public void getMelon() { //멜론
         final String melonUrl = "https://www.melon.com/buy/pamphlet/discount.htm";
         Connection conn = Jsoup.connect(melonUrl);
         try {
@@ -276,7 +402,7 @@ public class JsoupComponent { //크롤링
     }
 
     @Transactional
-    public void getGenie() { //지니 크롤링
+    public void getGenie() { //지니
         final String genieUrl = "https://www.genie.co.kr/buy/recommend";
         Connection conn = Jsoup.connect(genieUrl);
         try {
@@ -316,7 +442,7 @@ public class JsoupComponent { //크롤링
     }
 
     @Transactional
-    public void getSpotify() { //스포티파이 크롤링
+    public void getSpotify() { //스포티파이
         final String spotifyUrl = "https://www.spotify.com/kr-ko/premium/#plans";
         Connection conn = Jsoup.connect(spotifyUrl);
         try {
@@ -358,7 +484,7 @@ public class JsoupComponent { //크롤링
     }
 
     @Transactional
-    public void getBugs() { //벅스 크롤링
+    public void getBugs() { //벅스
         final String bugsUrl = "https://music.bugs.co.kr/pay/public";
         Connection conn = Jsoup.connect(bugsUrl);
         try {
@@ -395,63 +521,86 @@ public class JsoupComponent { //크롤링
 
     @Transactional
     public void getFlo() { //플로
-//        final String floUrl = "https://www.music-flo.com/purchase/voucher";
-//        Connection conn = Jsoup.connect(floUrl);
-//        try {
-//            Document document = conn.get();
-//            getFlo(document);
-//        } catch (IOException ignored) {
-//            ignored.printStackTrace();
-//        }
-        String[] musicPlan = {"무제한 듣기+오프라인 재생", "무제한 듣기+오프라인 재생", "무제한 듣기+오프라인 재생",
-        "무제한 듣기", "무제한 듣기", "무제한 듣기", "300회 듣기", "모바일 무제한 듣기", "모바일 무제한 듣기", "모바일 무제한 듣기"};
-        String[] musicPlandescription = {"기기제한 없음, 무제한 스트리밍, 오프라인 재생",
-                "기기제한 없음, 무제한 스트리밍, 오프라인 재생", "기기제한 없음, 무제한 스트리밍, 오프라인 재생",
-        "기기제한 없음, 무제한 듣기", "기기제한 없음, 무제한 듣기", "기기제한 없음, 무제한 듣기", "기기제한 없음, 횟수 제한",
-        "모바일 전용, 무제한 스트리밍", "모바일 전용, 무제한 스트리밍", "모바일 전용, 무제한 스트리밍"};
-        String[] musicPrice = {"정기결제 11,000원", "T멤버십 최소 100원 6개월 10,900원", "1개월권 11,000원",
-                "정기결제 8,000원", "T멤버십 최소 100원 6개월 7,900원", "1개월권 8,000원", "1개월권 4,800원",
-                "정기결제 7,000원", "T멤버십 최소 100원 6개월 6,900원", "1개월권 7,000원"};
-        String[] musicDiscount = {"10,900원", "100원", "", "7,900원", "100원", "", "", "6,900원", "100원", ""};
+        final String floUrl = "https://www.music-flo.com/api/purchase/v1/general";
+        Connection conn = Jsoup.connect(floUrl);
+        try {
+            Document document = conn
+                    .header("origin", "https://www.music-flo.com/") // same-origin-polycy 로 인한 설정
+                    .header("referer", "https://www.music-flo.com/") // same-origin-polycy 로 인한 설정
+                    .ignoreContentType(true) // json 받아오려면 타입무시
+                    .get();
+            getFlo(document);
+        } catch (IOException | ParseException ignored) {
+            ignored.printStackTrace();
+        }
+    }
 
+    public void getFlo(Document document) throws ParseException {
         if(!compareMusicRepository.existsByMusicName("Flo")) { //db에 없으면 저장
-            for(int i = 0; i< musicPlan.length; i++) {
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(document.text());
+            JSONObject jsonObject1 = (JSONObject) jsonObject.get("data");
+            JSONObject jsonObject2 = (JSONObject) jsonObject1.get("nuguVoucher");
+            JSONObject jsonObject3  = (JSONObject) jsonObject1.get("unlimitedVoucher");
+
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(jsonObject2.get("drmVoucher"));
+            jsonArray.add(jsonObject2.get("unlimitedVoucher"));
+            jsonArray.add(jsonObject2.get("quantityVoucher"));
+            jsonArray.add(jsonObject3.get("unlimitedVoucher"));
+
+            for(int i = 0; i < jsonArray.size(); i++) {
+                JSONObject object = (JSONObject) jsonArray.get(i);
                 CompareMusicDto compareMusicDto = CompareMusicDto.builder().build();
                 compareMusicDto.setMusicName("Flo");
-                compareMusicDto.setMusicPlan(musicPlan[i]);
-                compareMusicDto.setMusicPlandescription(musicPlandescription[i]);
-                compareMusicDto.setMusicPrice(musicPrice[i]);
-                compareMusicDto.setMusicDiscount(musicDiscount[i]);
-                compareMusicRepository.save(compareMusicDto.toEntity());
+                JSONArray jsonArray1 = (JSONArray) object.get("voucherList");
+                for(Object obj : jsonArray1) {
+                    compareMusicDto.setMusicPlan(object.get("voucherCategoryName").toString()); //요금제명
+                    compareMusicDto.setMusicPlandescription(object.get("voucherCategorySubName").toString()); //요금제 설명
+
+                    JSONObject childObj = (JSONObject) obj;
+                    int normalPrice = Integer.parseInt(childObj.get("normalPrice").toString()); //기본가격
+                    int disCountPrice = Integer.parseInt(childObj.get("discountPrice").toString());
+                    int disCount = normalPrice - disCountPrice; //할인가격
+                    compareMusicDto.setMusicPrice(childObj.get("voucherName").toString() + " " + normalPrice + "원");
+                    if (disCountPrice != 0) {
+                        compareMusicDto.setMusicDiscount(disCount + "원");
+                    }
+                    compareMusicRepository.save(compareMusicDto.toEntity());
+                }
             }
         }
     }
 
     @Transactional
     public void getYoutubeMusic() { //유튜브뮤직
-//       final String youtubeMusicUrl = "";
-//        Connection conn = Jsoup.connect(youtubeMusicUrl);
-//        try {
-//            Document document = conn.get();
-//            getYoutubeMusic(document);
-//        } catch (IOException ignored) {
-//            ignored.printStackTrace();
-//        }
-        String[] musicPlan = {"월 8,690원"};
-        String[] musicPlandescription = {"1개월 무료체험"};
-        String[] musicPrice = {"8,690원"};
-        String[] musicDiscount = {""};
-
         if(!compareMusicRepository.existsByMusicName("YoutubeMusic")) { //db에 없으면 저장
-            for(int i = 0; i< musicPlan.length; i++) {
+            setup();
+
+            try {
+                final String url = "https://www.youtube.com/musicpremium";
+
+                driver.get(url); //브라우저에서 url로 이동한다.
+                Thread.sleep(1000); //브라우저 로딩될때까지 잠시 기다린다.
+
+                WebElement elements = driver.findElement(By.xpath("//*[@id=\"metadatas\"]/yt-formatted-string"));
+                String element[] = elements.getText().split("• ");
+
                 CompareMusicDto compareMusicDto = CompareMusicDto.builder().build();
                 compareMusicDto.setMusicName("YoutubeMusic");
-                compareMusicDto.setMusicPlan(musicPlan[i]);
-                compareMusicDto.setMusicPlandescription(musicPlandescription[i]);
-                compareMusicDto.setMusicPrice(musicPrice[i]);
-                compareMusicDto.setMusicDiscount(musicDiscount[i]);
+                compareMusicDto.setMusicPlandescription(element[0]); //요금제 설명
+                compareMusicDto.setMusicPrice(element[1]); //가격
                 compareMusicRepository.save(compareMusicDto.toEntity());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+            down();
         }
+    }
+
+    public void down() {
+        driver.close();	//탭 닫기
+        driver.quit();	//브라우저 닫기
     }
 }
