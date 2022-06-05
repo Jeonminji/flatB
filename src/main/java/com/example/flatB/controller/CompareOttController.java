@@ -25,7 +25,7 @@ public class CompareOttController {
     private final CompareOttService compareOttService;
 
     @GetMapping("/{platformName}")
-    public ResponseEntity getNetflix(@PathVariable String platformName) {
+    public ResponseEntity getPlatform(@PathVariable String platformName) {
         List<CompareOttEntity> ottList = new ArrayList<>();
         switch (platformName) {
             case "netflix":

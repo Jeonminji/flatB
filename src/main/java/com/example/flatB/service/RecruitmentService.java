@@ -51,6 +51,12 @@ public class RecruitmentService {
     }
 
     //모집중인 글 보기
+    @Transactional
+    public List<RecruitmentEntity> getRecruitingBoard(String ott_platformname) {
+        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByPlatformnameAndTotalcountEqualsCurrentcount(
+                ott_platformname);
+        return recruitmentEntities;
+    }
 
     //수정, 삭제를 위한 특정 리뷰 조회
     @Transactional
