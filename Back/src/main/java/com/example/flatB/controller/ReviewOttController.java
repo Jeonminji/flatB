@@ -13,8 +13,6 @@ import com.example.flatB.service.OttRecService;
 import com.example.flatB.service.ReviewOttService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +49,7 @@ public class ReviewOttController {
 
     //플랫폼별 리뷰 조회
     @GetMapping("/{platformname}")
-    public ResponseEntity getBoards(@PageableDefault(size = 10) Pageable pageable, @PathVariable String platformname,
+    public ResponseEntity getBoards(@PathVariable String platformname,
                                     @RequestParam(required = false) boolean latestOrder,
                                     @RequestParam(required = false) boolean totalPoints,
                                     @RequestParam(required = false) boolean recOrder) {
@@ -83,7 +81,7 @@ public class ReviewOttController {
         } else if (totalPoints) { //별점순 조회
             reviewOttEntities = reviewOttService.getBoardsByTotalPointsOrder(ott_platformname);
         } else { //default
-            reviewOttEntities = reviewOttService.getBoards( ott_platformname);
+            reviewOttEntities = reviewOttService.getBoards(ott_platformname);
         }
 
         List<ReviewOttResponseDto> boardList = ReviewOttResponseDto.ofEntities(reviewOttEntities);
@@ -92,16 +90,12 @@ public class ReviewOttController {
             boardList.sort((a, b) -> b.getRecommendations() - a.getRecommendations());
         }
 
-        int start = (int) pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > boardList.size() ? boardList.size() : (start + pageable.getPageSize());
-        Page<ReviewOttResponseDto> responseDtos = new PageImpl<>(boardList.subList(start, end), pageable, boardList.size());
-
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, responseDtos), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
     }
 
     //내가 쓴 모든 리뷰 조회
     @GetMapping("/my")
-    public ResponseEntity getBoardByUser(@PageableDefault(size = 10) Pageable pageable, Principal principal) {
+    public ResponseEntity getBoardByUser(Principal principal) {
         if (principal.getName().isEmpty()) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
@@ -111,11 +105,7 @@ public class ReviewOttController {
         List<ReviewOttEntity> reviewOttEntities = reviewOttService.getBoardsByUser(userEntity.get());
         List<ReviewOttResponseDto> boardList = ReviewOttResponseDto.ofEntities(reviewOttEntities);
 
-        int start = (int) pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > boardList.size() ? boardList.size() : (start + pageable.getPageSize());
-        Page<ReviewOttResponseDto> responseDtos = new PageImpl<>(boardList.subList(start, end), pageable, boardList.size());
-
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, responseDtos), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
     }
 
     //리뷰 수정 위해 원래 값 가져오기
@@ -125,7 +115,7 @@ public class ReviewOttController {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
         }
-        ReviewOttEntity reviewOttEntity = reviewOttService.getBoard(boardNo, principal.getName());
+        ReviewOttEntity reviewOttEntity = reviewOttService.getBoard(boardNo);
         if (checkAuthority(reviewOttEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
@@ -145,13 +135,13 @@ public class ReviewOttController {
                     , HttpStatus.NOT_FOUND);
         }
 
-        ReviewOttEntity reviewOttEntity = reviewOttService.getBoard(boardNo, principal.getName());
+        ReviewOttEntity reviewOttEntity = reviewOttService.getBoard(boardNo);
         if (checkAuthority(reviewOttEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
         }
 
-        if(reviewOttService.update(boardNo, reviewOttUpdateDto, principal.getName()).equals("SUCCESS")) {
+        if(reviewOttService.update(boardNo, reviewOttUpdateDto).equals("SUCCESS")) {
             return new ResponseEntity(DefaultRes.res(StatusCode.CREATED, ResponseMessage.POST_UPDATE, reviewOttUpdateDto),
                     HttpStatus.CREATED);
         }
@@ -168,13 +158,13 @@ public class ReviewOttController {
                     , HttpStatus.NOT_FOUND);
         }
 
-        ReviewOttEntity reviewOttEntity = reviewOttService.getBoard(boardNo, principal.getName());
+        ReviewOttEntity reviewOttEntity = reviewOttService.getBoard(boardNo);
         if (checkAuthority(reviewOttEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
         }
 
-        if (reviewOttService.delete(boardNo, principal.getName()).equals("SUCCESS")) {
+        if (reviewOttService.delete(boardNo).equals("SUCCESS")) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.POST_DELETE),
                     HttpStatus.NO_CONTENT);
         }
@@ -216,6 +206,24 @@ public class ReviewOttController {
         if(!reviewOttEntity.getUserEntity().getUserId().equals(userId))
             return ResponseMessage.NOT_FOUND_USER;
         return ResponseMessage.READ_USER;
+    }
+
+    //글 수정 권한 확인
+    @GetMapping("/update/check/{boardNo}")
+    public ResponseEntity updateCheckAuthority(@PathVariable Long boardNo, Principal principal) {
+        if (principal.getName().isEmpty()) {
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
+                    , HttpStatus.NOT_FOUND);
+        }
+
+        ReviewOttEntity reviewOttEntity = reviewOttService.getBoard(boardNo);
+
+        if (checkAuthority(reviewOttEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
+                    , HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ), HttpStatus.OK);
     }
 
 }
