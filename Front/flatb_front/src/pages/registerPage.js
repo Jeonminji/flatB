@@ -7,7 +7,199 @@ import axios from 'axios';
 
 const RegisterPage =(props) =>{ 
 
+    // id . 오류메세지, 유효성검사, 중복확인
+    const [userId, setId] = useState('');
+    const [idMessage, setIdMessage] = useState('');
+    const [isId, setIsId] = useState(false);
+    const [idCheck, setIdCheck] = useState(false);
 
+    // 비밀번호, 오류메세지, 유효성검사
+    const [pw, setPw] = useState('');
+    const [pwMessage, setPwMessage] = useState('');
+    const [isPw, setIsPw] = useState(false);
+    const [pwImg, setPwImg]=useState('img/m_icon_pass.png');
+
+    // 비밀번호 확인, 오류메세지, 유효성검사
+    const [pwConfirm, setPwConfirm] = useState('');
+    const [pwConfirmMessage, setPwConfirmMessage] = useState('');
+    const [isPwConfirm, setIsPwConfirm] = useState(false);
+    const [pwConfirmImg, setPwConfirmImg]=useState('img/m_icon_check_disable.png');
+
+    // 이름, 오류메세지, 유효성검사
+    const [name, setName] = useState('');
+    const [nameMessage, setNameMessage] = useState('');
+    const [isName, setIsName] = useState(false);
+
+    // 닉네임, 오류메세지, 유효성검사, 중복 확인
+    const [nickname, setNickName] = useState('');
+    const [nickNameMessage, setNickNameMessage] = useState('');
+    const [isNickName, setIsNickName] = useState(false);
+    const [nickNameCheck, setNickNameCheck] = useState(false);
+
+    // 나이, 오류메세지, 유효성검사
+    const [age, setAge] = useState('');
+    const [ageMessage, setAgeMessage] = useState('');
+    const [isAge, setIsAge] = useState(false);
+
+    // 성별, 오류메세지, 유효성검사
+    const [gender, setGender] = useState('');
+    const [genderMessage, setGenderMessage] = useState('');
+    const [isGender, setIsGender] = useState(false);
+
+    // 전화번호, 오류메세지, 유효성검사
+    const [contact, setContact] = useState('');
+    const [contactMessage, setContactMessage] = useState('');
+    const [isContact, setIsContact] = useState(false);
+ 
+    //페이지 이동
+    const navigate = useNavigate();
+    
+
+    const onChangeId = useCallback((e) => {
+        const idRegex = /[a-zA-Z0-9_-]{5,10}/;
+        const idCurrent=e.target.value;
+        setId(idCurrent);
+
+        if(idCurrent === ""){
+            setIdMessage('필수 입력 요소입니다');
+            setIsId(false);
+        }
+        else if(!idRegex.test(idCurrent)){
+            setIdMessage('5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다');
+            setIsId(false);
+        }
+        else{
+            setIdMessage('');
+            setIsId(true);
+        }
+        
+    },[]);
+
+    const onChangePw = useCallback((e) => {
+        const pwRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+        const pwCurrent = e.target.value;
+        setPw(pwCurrent);
+
+        if(pwCurrent===""){
+            setPwMessage('필수 입력 요소입니다.');
+            setIsPw(false);
+            setPwImg('img/m_icon_not_use.png');
+        }
+        else if(!pwRegex.test(pwCurrent) || pwCurrent.length<8){
+            setPwMessage('숫자+영문자+특수조합으로 8자리 이상 입력해주세요.');
+            setIsPw(false);
+            setPwImg('img/m_icon_not_use.png');
+        }
+        else{
+            setIsPw(true);
+            setPwImg('img/m_icon_safe.png');
+        }
+
+    },[]);
+
+    const onChangePwConfirm = useCallback((e) =>{
+        const pwConfirmCurrent = e.target.value;
+        setPwConfirm(pwConfirmCurrent);
+
+        if(pw === pwConfirmCurrent){
+            setIsPwConfirm(true);
+            setPwConfirmImg('img/m_icon_check_enable.png');
+        }
+        else if(pwConfirmCurrent===""){
+            setPwConfirmMessage('필수 입력 요소입니다');
+            setIsPwConfirm(false);
+        }
+        else{
+            setPwConfirmMessage('비밀번호가 동일하지 않습니다.');
+            setIsPwConfirm(false);
+        }
+
+    },[pw]);
+
+    const onChangeName = useCallback((e) => {
+        const nameRegex=/[a-zA-Z가-힣]/;
+        const namespcRegex=/[~!@#$%^&*()_+|<>?:{}]/;
+        const nameCurrent = e.target.value;
+        setName(nameCurrent);
+
+        if(nameCurrent === ""){
+            setNameMessage('필수 입력 요소입니다');
+            setIsName(false);
+        }
+        else if (!nameRegex.test(nameCurrent)|| namespcRegex.test(nameCurrent) || nameCurrent.indexOf(" ")>-1) {
+          setNameMessage('한글과 영문 대 소문자를 사용하세요. (특수기호, 공백 사용 불가)');
+          setIsName(false);
+        } else {
+          setIsName(true);
+        }
+      }, []);
+
+
+      const onChangeNickName = useCallback((e) => {
+        const nicknameRegex=/[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+        const nicknamespcRegex=/[~!@#$%^&*()_+|<>?:{}]/;
+        const nicknameCurrent = e.target.value;
+        setNickName(nicknameCurrent);
+
+        if(nicknameCurrent === "" || nicknameCurrent===null){
+            setNickNameMessage('필수 입력 요소입니다');
+            setIsNickName(false);
+        }
+        else if (!nicknameRegex.test(nicknameCurrent) || nicknamespcRegex.test(nicknameCurrent) || nicknameCurrent.indexOf(" ") > -1) {
+          setNickNameMessage('한글과 영문 대 소문자 숫자를 사용하세요. (특수기호, 공백 사용 불가)');
+          setIsNickName(false);
+        } else {
+          setIsNickName(true);
+          setNickNameMessage(null);
+        }
+      }, []);
+
+      const onChangeAge = useCallback((e) => {
+        setAge(e.target.value);
+        const ageRegex=/[0-9]{4}/;
+        if(e.target.value === "" ){
+            setAgeMessage('필수 입력 요소입니다');
+            setIsAge(false);
+        }
+        else if (!ageRegex.test(e.target.value) || e.target.value < 1920 || e.target.value > 2022) {
+          setAgeMessage('생년를 제대로 입력해주세요');
+          setIsAge(false);
+        } 
+        else {
+          setIsAge(true);
+        }
+      }, []);
+
+      const onChangeGender = useCallback((e) => {
+        setGender(e.target.value);
+        
+        if(e.target.value === "성별"){
+            setGenderMessage('필수 입력 요소입니다');
+            setIsGender(false);
+        }
+        else {
+          setIsGender(true);
+        }
+      }, []);
+
+      const onChangeContact = useCallback((e) => {
+        const contactRegex=/([01]{2})([01679]{1})([-]{1})([0-9]{3,4})([-]{1})([0-9]{4})/;
+        const contactCurrent=e.target.value;
+        setContact(contactCurrent);
+        if(contactCurrent===""){
+            setContactMessage('필수 입력 요소입니다');
+            setIsContact(false);
+        }
+        else if(!contactRegex.test(contactCurrent)){
+            setContactMessage('형식에 맞지 않는 번호입니다');
+            setIsContact(false);
+        }
+        else {
+          setIsContact(true);
+        }
+      }, []);
+
+      
 
     return ( 
         <div className='register'> 
