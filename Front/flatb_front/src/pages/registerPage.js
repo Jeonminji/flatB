@@ -200,6 +200,59 @@ const RegisterPage =(props) =>{
       }, []);
 
       
+      const onIdCheck  = useCallback(
+        async (e) => {
+          e.preventDefault()
+          try {
+            await axios({
+              method: "GET",
+              url: '/user/signup/userId/'+userId+'/exists'
+            }).then((res) => {
+                if (res.data === false) {
+                    setIdCheck(true);
+                    setIdMessage("사용 가능한 아이디입니다.");
+                }
+                else{
+                    setIdCheck(false);
+                    setIdMessage("사용 불가능한 아이디입니다.");
+                    setIsId(false);
+                }
+              })
+          } catch (err) {
+            console.error(err)
+          }
+        },
+        [userId]
+      )
+
+      const onNickNameCheck  = useCallback(
+        async (e) => {
+          e.preventDefault()
+          try {
+            await axios({
+              method: "GET",
+              url: '/user/signup/nickname/'+nickname+'/exists'
+            })
+              .then((res) => {
+                if (res.data === false) {
+                    setNickNameCheck(true);
+                    setNickNameMessage("사용 가능한 닉네임입니다.");
+                }
+                else{
+                    setNickNameCheck(false);
+                    setNickNameMessage("사용 불가능한 닉네임입니다.");
+                    setIsNickName(false);
+                }
+              })
+          } catch (err) {
+            console.error(err)
+          }
+        },
+        [nickname]
+      )
+
+
+
 
     return ( 
         <div className='register'> 
