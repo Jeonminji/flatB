@@ -11,10 +11,6 @@ import com.example.flatB.domain.entity.UserEntity;
 import com.example.flatB.repository.UserRepository;
 import com.example.flatB.service.RecruitmentService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -46,10 +42,23 @@ public class RecruitmentController {
         return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.POST_NOT_CREATED), HttpStatus.BAD_REQUEST);
     }
 
-    //플랫폼별 인원 모집 글 조회
+    //전체 글 조회
+    @GetMapping("")
+    public ResponseEntity getAllBoards(@RequestParam(required = false) boolean recruiting) {
+        List<RecruitmentEntity> recruitmentEntities;
+        if (recruiting) //모집중인 글만 보기 (모집중 필터)
+            recruitmentEntities = recruitmentService.getRecruitingAllBoards();
+        else
+            recruitmentEntities = recruitmentService.getRecruitmentBoardsAll();
+
+        List<RecruitmentResponseDto> boardList = RecruitmentResponseDto.ofEntities(recruitmentEntities);
+
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
+    }
+
+    //플랫폼별 인원 모집 카테고리별 글 조회
     @GetMapping("/{platformname}")
-    public ResponseEntity getRecruitmentBoards(@PageableDefault(size = 8) Pageable pageable,
-                                               @PathVariable String platformname,
+    public ResponseEntity getRecruitmentBoards(@PathVariable String platformname,
                                                @RequestParam(required = false) boolean recruiting) {
         String ott_platformname = "";
         switch (platformname) {
@@ -75,20 +84,13 @@ public class RecruitmentController {
 
         List<RecruitmentEntity> recruitmentEntities;
         if (recruiting) //모집중인 글만 보기 (모집중 필터)
-            recruitmentEntities =
-                    recruitmentService.getRecruitingBoard(ott_platformname);
+            recruitmentEntities = recruitmentService.getRecruitingBoard(ott_platformname);
         else
-            recruitmentEntities =
-                    recruitmentService.getRecruitmentBoards(ott_platformname);
+            recruitmentEntities = recruitmentService.getRecruitmentBoards(ott_platformname);
 
-        List<RecruitmentResponseDto> boardList =
-                RecruitmentResponseDto.ofEntities(recruitmentEntities);
+        List<RecruitmentResponseDto> boardList = RecruitmentResponseDto.ofEntities(recruitmentEntities);
 
-        int start = (int) pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > boardList.size() ? boardList.size() : (start + pageable.getPageSize());
-        Page<RecruitmentResponseDto> responseDtos = new PageImpl<>(boardList.subList(start, end), pageable, boardList.size());
-
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, responseDtos), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
     }
 
     //글 상세조회
@@ -103,7 +105,7 @@ public class RecruitmentController {
 
     //내 글 필터
     @GetMapping("/my")
-    public ResponseEntity getBoardsByUser(@PageableDefault(size = 8) Pageable pageable, Principal principal) {
+    public ResponseEntity getBoardsByUser( Principal principal) {
         if (principal.getName().isEmpty()) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
@@ -112,18 +114,7 @@ public class RecruitmentController {
         List<RecruitmentEntity> recruitmentEntities = recruitmentService.getRecruitmentBoardByUser(userEntity.get());
         List<RecruitmentResponseDto> boardList = RecruitmentResponseDto.ofEntities(recruitmentEntities);
 
-        int start = (int) pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > boardList.size() ? boardList.size() : (start + pageable.getPageSize());
-        Page<RecruitmentResponseDto> responseDtos = new PageImpl<>(boardList.subList(start, end), pageable, boardList.size());
-
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, responseDtos), HttpStatus.OK);
-    }
-
-    //권한 확인
-    private String checkAuthority(RecruitmentEntity recruitmentEntity, String userId) {
-        if(!recruitmentEntity.getUserEntity().getUserId().equals(userId))
-            return ResponseMessage.NOT_FOUND_USER;
-        return ResponseMessage.READ_USER;
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
     }
 
     //리뷰 수정 위해 원래 값 가져오기
@@ -132,7 +123,7 @@ public class RecruitmentController {
         if (principal.getName().isEmpty()) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
-        RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo, principal.getName());
+        RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
 
         if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
@@ -153,13 +144,13 @@ public class RecruitmentController {
                     , HttpStatus.NOT_FOUND);
         }
 
-        RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo, principal.getName());
+        RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
 
         if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 
-        if(recruitmentService.update(boardNo, recruitmentUpdateDto, principal.getName()).equals("SUCCESS")) {
+        if(recruitmentService.update(boardNo, recruitmentUpdateDto).equals("SUCCESS")) {
             return new ResponseEntity(DefaultRes.res(StatusCode.CREATED, ResponseMessage.POST_UPDATE, recruitmentUpdateDto),
                     HttpStatus.CREATED);
         }
@@ -176,18 +167,41 @@ public class RecruitmentController {
                     , HttpStatus.NOT_FOUND);
         }
 
-        RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo, principal.getName());
+        RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
 
         if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 
-        if (recruitmentService.delete(boardNo, principal.getName()).equals("SUCCESS")) {
+        if (recruitmentService.delete(boardNo).equals("SUCCESS")) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.POST_DELETE),
                     HttpStatus.NO_CONTENT);
         }
 
         return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.POST_DELETE_FAIL)
                 , HttpStatus.BAD_REQUEST);
+    }
+
+    //권한 확인
+    private String checkAuthority(RecruitmentEntity recruitmentEntity, String userId) {
+        if(!recruitmentEntity.getUserEntity().getUserId().equals(userId))
+            return ResponseMessage.NOT_FOUND_USER;
+        return ResponseMessage.READ_USER;
+    }
+
+    //글 수정 권한 확인
+    @GetMapping("/update/check/{boardNo}")
+    public ResponseEntity updateCheckAuthority(@PathVariable Long boardNo, Principal principal) {
+        if (principal.getName().isEmpty()) {
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
+        }
+
+        RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
+
+        if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ), HttpStatus.OK);
     }
 }
