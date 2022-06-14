@@ -105,6 +105,27 @@ select {
 
 
 
+/* 에러메세지 */
+
+.register_errorTxt {
+    margin-top: 9px;
+    font-size: 12px;
+    color: red;
+    display: none;    
+}
+
+.success {
+    display: none;
+  }
+
+  .check_success{
+      display:block;
+      color: green;
+  }
+.error {
+    color: #ff2727;
+    display: block;
+  }
 
 /* 버튼 */
 .id_check_btn{
