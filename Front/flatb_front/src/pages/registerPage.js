@@ -252,7 +252,46 @@ const RegisterPage =(props) =>{
       )
 
 
+      const onSubmit  = useCallback(
+        async (e) => {
+          e.preventDefault()
+          try {
+            await axios({
+              method: "POST",
+              url: '/user/signup',
+              data:{ 
+                userId: userId,
+                password: pw,
+                name: name,
+                nickname: nickname,
+                contact: contact,
+                age: age,
+                gender: gender}
 
+            })
+              .then((res) => {
+                if(res.status===201){
+                  Swal.fire({ 
+                    icon: 'success', // Alert 타입 
+                    title: '회원가입 성공', // Alert 제목 
+                    confirmButtonColor: '#DE4D31'
+                    });
+                  navigate("/login");
+                }
+                else{
+                  Swal.fire({ 
+                    icon: 'warning', // Alert 타입 
+                    title: '회원가입 실패', // Alert 제목 
+                    confirmButtonColor: '#DE4D31'
+                    });
+                }
+              })
+          } catch (err) {
+            console.error(err)
+          }
+        },
+        [userId,pw, name, nickname, contact, age, gender]
+      )
 
     return ( 
         <div className='register'> 
