@@ -156,3 +156,7 @@ select {
     font-size: 20px;
     font-weight: bold;
 }
+
+.register_btn:disabled{
+    background-color: #D3D3D3;
+}
