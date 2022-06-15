@@ -47,7 +47,29 @@ const Recruitment=(props) =>{
     const [page, setPage] = useState(1);
     const offset = (page - 1) * limit;
 
-      
+
+    const checkOnlyOne = (checkThis, checked) => {
+        const checkboxes = document.getElementsByClassName('checkBox')
+       
+        if(checked){
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] !== checkThis) {
+                    checkboxes[i].checked = false
+                    
+                }
+            }
+            if(checkThis.name==="my"){
+                myContentGet();
+            }
+            else{
+                situationGet();
+            }
+        }
+        else{
+            getDB();
+        }
+      }
+
     return ( 
     <>
         <Header /> 
