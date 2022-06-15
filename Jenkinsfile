@@ -4,7 +4,7 @@ pipeline{
   stages{
     stage('build'){
       steps{
-        sh 'cd ./Front/flatb_front && npm install && npm run build'      
+        sh 'cd ./Front/flatb_front && yarn install && yarn run build'      
       }
     }
 
