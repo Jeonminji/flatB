@@ -77,6 +77,48 @@ const Declaration=(props) =>{
         
     },[]);
 
+
+    const declar_onsubmit  = useCallback(
+        async (e) => {
+            e.preventDefault()
+
+            if(!is_declar_nickname||!is_declar_category||!is_declar_type||!is_declar_content){
+            Swal.fire({ icon: 'warning', // Alert 타입 
+            title: '신고에 실패하셨습니다.', // Alert 제목 
+            text: '닉네임, 게시판, 유형, 내용을 입력했는지 확인해주세요',
+            confirmButtonColor: '#DE4D31' 
+            });
+        }else{
+            
+            try {
+            await axios
+            ({
+                method: "POST",
+                url: '/report',
+                data:{ 
+                    nickname: declar_nickname,
+                    note: declar_category,
+                    type: declar_type,
+                    content: declar_content}
+    
+                })
+                .then((res) => {
+                console.log('response:', res)
+                if (res.status === 200) {
+                    Swal.fire({ 
+                        icon: 'success', // Alert 타입 
+                        title: '신고 되었습니다.', // Alert 제목 
+                        confirmButtonColor: '#DE4D31'
+                        });
+                }
+                })
+            } catch (err) {
+            console.error(err)
+            }
+        }},
+        [declar_nickname, declar_category, declar_type, declar_content]
+        )
+
     return ( 
        <div>
            <Header/>
