@@ -12,7 +12,6 @@ import RecruitForm from '../components/Form/RecruitForm'
 
 const Recruitment=(props) =>{ 
 
-
     // data get
     const[recruitItem, setRecruitItem] = useState({items:[]});
     const getDB =  async () => {
@@ -43,8 +42,12 @@ const Recruitment=(props) =>{
     
     },[])
 
-      
+    // 페이징 처리
+    const [limit, setLimit] = useState(8); //한 페이지에 8개
+    const [page, setPage] = useState(1);
+    const offset = (page - 1) * limit;
 
+      
     return ( 
     <>
         <Header /> 
