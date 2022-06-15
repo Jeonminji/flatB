@@ -35,7 +35,7 @@ public class RecruitmentUpdateDto { //수정
     public RecruitmentUpdateDto(RecruitmentEntity recruitmentEntity) {
         this.title = recruitmentEntity.getTitle();
         this.content = recruitmentEntity.getContent();
-        this.platformname = recruitmentEntity.getPlatformname();
+        this.platformname = recruitmentEntity.getOttEntity().getOttName();
         this.totalcount = recruitmentEntity.getTotalcount();
         this.currentcount = recruitmentEntity.getCurrentcount();
         this.usedateStart = recruitmentEntity.getUsedateStart();

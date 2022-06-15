@@ -1,5 +1,6 @@
 package com.example.flatB.domain.dto;
 
+import com.example.flatB.domain.entity.OttEntity;
 import com.example.flatB.domain.entity.RecruitmentEntity;
 import com.example.flatB.domain.entity.UserEntity;
 import lombok.*;
@@ -15,6 +16,7 @@ public class RecruitmentSaveDto { //저장
     private String title;
     private String content;
     private String platformname;
+    private OttEntity ottEntity;
     private int totalcount;
     private int currentcount;
     private String usedateStart;
@@ -27,7 +29,7 @@ public class RecruitmentSaveDto { //저장
         RecruitmentEntity recruitmentEntity = RecruitmentEntity.builder()
                 .title(title)
                 .content(content)
-                .platformname(platformname)
+                .ottEntity(ottEntity)
                 .totalcount(totalcount)
                 .currentcount(currentcount)
                 .usedateStart(usedateStart)

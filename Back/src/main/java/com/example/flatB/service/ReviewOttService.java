@@ -53,7 +53,7 @@ public class ReviewOttService {
 
     //수정, 삭제를 위한 특정 리뷰 조회
     @Transactional
-    public ReviewOttEntity getBoard(Long board_no, String userId) {
+    public ReviewOttEntity getBoard(Long board_no) {
         ReviewOttEntity reviewOttEntity = reviewOttRepository.findByOttBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
         return reviewOttEntity;
@@ -61,7 +61,7 @@ public class ReviewOttService {
 
     //리뷰 수정
     @Transactional
-    public String update(Long board_no, ReviewOttUpdateDto reviewOttUpdateDto, String userId) {
+    public String update(Long board_no, ReviewOttUpdateDto reviewOttUpdateDto) {
         ReviewOttEntity reviewOttEntity = reviewOttRepository.findByOttBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
 
@@ -76,7 +76,7 @@ public class ReviewOttService {
 
     //리뷰 삭제
     @Transactional
-    public String delete(Long board_no, String userId) {
+    public String delete(Long board_no) {
         ReviewOttEntity reviewOttEntity = reviewOttRepository.findByOttBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
         reviewOttRepository.delete(reviewOttEntity);

@@ -54,7 +54,7 @@ public class ReviewMusicService {
 
     //수정, 삭제를 위한 특정 리뷰 조회
     @Transactional
-    public ReviewMusicEntity getBoard(Long board_no, String userId) {
+    public ReviewMusicEntity getBoard(Long board_no) {
         ReviewMusicEntity reviewMusicEntity = reviewMusicRepository.findByMusicBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
         return reviewMusicEntity;
@@ -62,7 +62,7 @@ public class ReviewMusicService {
 
     //리뷰 수정
     @Transactional
-    public String update(Long board_no, ReviewMusicUpdateDto reviewMusicUpdateDto, String userId) {
+    public String update(Long board_no, ReviewMusicUpdateDto reviewMusicUpdateDto) {
         ReviewMusicEntity reviewMusicEntity = reviewMusicRepository.findByMusicBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
 
@@ -76,7 +76,7 @@ public class ReviewMusicService {
 
     //리뷰 삭제
     @Transactional
-    public String delete(Long board_no, String userId) {
+    public String delete(Long board_no) {
         ReviewMusicEntity reviewMusicEntity = reviewMusicRepository.findByMusicBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
 
