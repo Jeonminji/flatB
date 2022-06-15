@@ -13,7 +13,37 @@ import RecruitForm from '../components/Form/RecruitForm'
 const Recruitment=(props) =>{ 
 
 
+    // data get
+    const[recruitItem, setRecruitItem] = useState({items:[]});
+    const getDB =  async () => {
 
+        try {
+            await axios({
+            method: "GET",
+            url: '/recruitmentOtt',
+            responseType: "json"
+            })
+            .then((res) => {
+                console.log(res);
+                
+                setRecruitItem({items:res.data.data});
+                
+            })
+        } catch (err) {
+                console.error(err)
+            }
+
+              
+    }
+
+    // 최초 한번 실행
+    useEffect(()=>{
+
+        getDB();
+    
+    },[])
+
+      
 
     return ( 
     <>
@@ -46,7 +76,12 @@ const Recruitment=(props) =>{
                         <div className="recruitCont2">
                             {recruitItem.items.slice(offset, offset + limit).map(item => <Item key={item.boardNo} item={item}/>)}
                         </div>
-                      
+                        <Pagination
+                            total={recruitItem.items.length}
+                            limit={limit}
+                            page={page}
+                            setPage={setPage}
+                        />
                     </div>
                 </div>
             </div>
