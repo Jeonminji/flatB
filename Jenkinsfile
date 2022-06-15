@@ -4,13 +4,9 @@ pipeline{
   stages{
     stage('cd'){
       steps{
-        sh 'ls -a'      
+        sh 'cd ./Front/flatb_front && ls -a'      
       }
     }
-    stage('build'){
-      steps{
-        sh 'npm install'
-      }
-    }
+
   }
 }
