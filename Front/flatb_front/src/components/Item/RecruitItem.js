@@ -21,6 +21,84 @@ const RecruitItem = (props) =>{
         
     })
 
+     // 상세 모달창
+     const [modalrecruit_contentOpen, setcontentModalOpen] = useState(false);
+     const openrecruit_contentModal = () => {
+         setcontentModalOpen(true);
+
+     };
+     const closerecruit_contentModal = () => {
+         setcontentModalOpen(false);
+     };
+ 
+    //  수정 모달창
+     const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+     const openUpdateModal = useCallback(
+        async (e) => {
+          e.preventDefault()
+            try {
+                await axios({
+                method: "GET",
+                url: "/recruitmentOtt/update/check/"+boardNo,
+                })
+                .then((res) => {
+                    console.log(res);
+                    if(res.status===200){
+                        // 권한이 있는 경우 
+                            setcontentModalOpen(false);
+                            setModalUpdateOpen(true);
+                            window.location.reload();
+
+                    }
+                    else if(res.data.data.response==="회원을 찾을 수 없습니다."){
+                        alert("수정 권한이 없습니다.");
+                        setcontentModalOpen(false);
+                    }
+                    else{
+                        alert("오류 발생");
+                        setcontentModalOpen(false);
+                    }
+                })} catch (err) {
+                    console.error(err)
+                    }
+               
+            },
+        [boardNo]
+      )
+     const closeUpdateModal = () => {
+        setModalUpdateOpen(false);
+    };
+
+    // recruit_content 삭제
+    const recruit_contentDelete = useCallback(
+        async (e) => {
+          e.preventDefault()
+            try {
+                await axios({
+                method: "DELETE",
+                url: '/recruitmentOtt/delete/'+ boardNo,
+                })
+                .then((res) => {
+                    console.log(res);
+                    if(res.data.data.response==="회원을 찾을 수 없습니다."){
+                        alert("삭제 권한이 없습니다.");
+                        setcontentModalOpen(false);
+                    }
+                    else{
+                        alert("삭제 성공");
+                            setcontentModalOpen(false);
+                            window.location.reload();
+
+                    }
+                })} catch (err) {
+                    console.error(err)
+                    }
+               
+            },
+        [boardNo]
+      )
+
+    
     return(
         
         <>
