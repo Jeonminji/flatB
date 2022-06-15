@@ -2,11 +2,14 @@ pipeline{
   agent any
   
   stages{
-    stage('build'){
+    stage('cd'){
       steps{
         sh 'cd ./Front/flatb_front/'
-        sh 'npm install'
-        sh 'npm run build'
+        sh 'ls -a'      
+      }
+    }
+    stage('build'){
+      steps{
       }
     }
   }
