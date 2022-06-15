@@ -47,6 +47,33 @@ const Recruitment=(props) =>{
     const [page, setPage] = useState(1);
     const offset = (page - 1) * limit;
 
+       // 내글 보기
+       const myContentGet =()=>{
+       
+        axios({
+            method: "get",
+            url: "/recruitmentOtt/my",
+            responseType: "json"
+        }).then((res)=>{
+            console.log(res.data.data);
+            setRecruitItem({items:res.data.data});
+        });
+        
+    }
+
+    const situationGet =()=>{
+       
+        axios({
+            method: "get",
+            url: "/recruitmentOtt?recruiting=1",
+            responseType: "json"
+        }).then((res)=>{
+            console.log(res.data.data);
+            setRecruitItem({items:res.data.data});
+        });
+        
+    }
+    
 
     const checkOnlyOne = (checkThis, checked) => {
         const checkboxes = document.getElementsByClassName('checkBox')
