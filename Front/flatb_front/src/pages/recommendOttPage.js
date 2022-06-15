@@ -88,6 +88,10 @@ const RecommendOttPage = () => {
         const maxScore = Math.max(netflixTotal,tvingTotal,watchaTotal,wavveTotal,disneyTotal,laftelTotal);
         const platforms = Object.keys(totalScore).filter(key => totalScore[key] === maxScore);
         
+         //결과 여러 개 일 경우 하나만 도출
+        const number = Math.floor(Math.random() * platforms.length);
+        const platform = platforms[number];
+
         return (
             <>
             
