@@ -4,7 +4,14 @@ pipeline{
   stages{
     stage('build'){
       steps{
-        sh 'cd ./Front/flatb_front && rm -rf node_modules && npm install && npm install react-scripts && npm run build'      
+        sh 
+        'cd ./Front/flatb_front 
+        && npm i -g npm 
+        && rm -rf node_modules
+        && npm cache clean
+        && npm install 
+        && npm install react-scripts 
+        && npm run build'      
       }
     }
 
