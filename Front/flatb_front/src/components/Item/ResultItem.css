@@ -1,0 +1,30 @@
+.recommendPlatform{
+    margin: 0 20px 20px 20px;
+}
+.recommendPlatformName{
+    font-family: "CookieRun";
+    font-size: 4.5rem;
+    text-align: center;
+    color: black;
+    margin-top: 1.9rem;
+    background-color: white;
+    margin-bottom:-50px;
+    width: 400px;
+    
+    
+}
+
+.resultContent{
+    background-color:#F9F3F0;
+    width: 300px;
+    height: 320px;
+    border-radius: 1.5rem;
+    text-align: center;
+    align-items: center;
+    margin: 0 50px;
+}
+.resultContent img{
+    margin-top: 50px;
+    width: 250px;
+    height: 250px;
+}
