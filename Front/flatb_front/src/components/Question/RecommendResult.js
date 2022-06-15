@@ -2,11 +2,23 @@ import React from 'react';
 import "./RecommendResult.css"
 import ResultItem from "../Item/ResultItem"
 import RecommendBtn from "../Btn/RecommendBtn"
+import { useNavigate } from 'react-router-dom';
 import logo from "../../img/flatBCharacter.png"
 const RecommendResult = (props) => {
 
     const {recommend, platform}=props;
 
+    //페이지 이동
+    const navigate = useNavigate();
+    const onclick=(link)=>{
+        if(link=="retry"){
+            window.location.reload();
+        }
+        else if(link=="detail"){
+            navigate("/compare");
+        }
+        
+    }
     return (
         <div className="result_wrap">
             <div className="result_cont">
