@@ -4,7 +4,161 @@ import "./RecruitForm.css"
 const RecruitForm = (props) => { 
     
     const {close,boardNo, title, content, platformname,totalcount, currentcount, usedate_start, usedate_end, contact, writer_id, regdate} = props;
+    // 제목
+    const [recruit_title, set_title] = useState(title);
+    const [is_title, set_is_title] = useState(false);
+    // 플랫폼명
+    const [recruit_platformname, set_platformname] = useState(platformname);
+    const [is_platformname, set_is_platformname] = useState(false);
+    // 모집 인원
+    const [recruit_totalcount, set_totalcount] = useState(totalcount);
+    const [is_totalcount, set_is_totalcount] = useState(false);
+    // 현재 인원
+    const [recruit_currentcount, set_currentcount] = useState(currentcount);
+    const [is_currentcount, set_is_currentcount] = useState(false);
+    // 시작사용기간
+    const [recruit_usedate_start, set_usedate_start] = useState(usedate_start);
+    const [is_usedate_start, set_is_usedate_start] = useState(false);
+    // 사용기간 끝
+    const [recruit_usedate_end, set_usedate_end] = useState(usedate_end);
+    const [is_usedate_end, set_is_usedate_end] = useState(false);
+    // 연락 수단
+    const [recruit_contact, set_contact] = useState(contact);
+    const [is_contact, set_is_contact] = useState(false);
+    // 한 마디
+    const [recruit_content, set_content] = useState(content);
+    const [is_content, set_is_content] = useState(false);
+  
+    useEffect(() => {
+        if(boardNo){
+            set_is_title(true);
+            set_is_platformname(true);
+            set_is_totalcount(true);
+            set_is_currentcount(true);
+            set_is_usedate_start(true);
+            set_is_usedate_end(true);
+            set_is_contact(true);
+            set_is_content(true);
+        }
+    })
+   
+          
+            
+    const onChange_recruit_title = useCallback((e) => {
+        const title_current=e.target.value;
+        set_title(title_current);
 
+        if(title_current === ""){
+            set_is_title(false);
+        }
+        else{
+            set_is_title(true);
+        }
+        
+    },[]);
+
+
+    const onChange_recruit_platformname = useCallback((e) => {
+        const platfromname_current=e.target.value;
+        set_platformname(platfromname_current);
+
+        if(platfromname_current === "platform"){
+            set_is_platformname(false);
+        }
+        else{
+            set_is_platformname(true);
+        }
+        
+    },[]);
+
+
+    const onChange_recruit_totalcount = useCallback((e) => {
+        const totalcount_current=e.target.value;
+        const totalcountRegex=/[0-5]{1}/;
+        set_totalcount(totalcount_current);
+
+        if(totalcount_current === "" || !totalcountRegex.test(totalcount_current)){
+            set_is_totalcount(false);
+        }
+        else{
+            set_is_totalcount(true);
+        }
+        
+    },[]);
+
+
+    const onChange_recruit_currentcount = useCallback((e) => {
+        
+        const currentcountRegex=/[0-5]{1}/;
+        const currentcount_current=e.target.value;
+        set_currentcount(currentcount_current);
+
+        if(currentcount_current === "" || !currentcountRegex.test(currentcount_current)){
+            set_is_currentcount(false);
+        }
+        else{
+            set_is_currentcount(true);
+        }
+        
+    },[]);
+
+
+    const onChange_recruit_usedate_start = useCallback((e) => {
+        const usedate_current=e.target.value;
+        set_usedate_start(usedate_current);
+
+        if(usedate_current === ""){
+            set_is_usedate_start(false);
+        }
+        else{
+            set_is_usedate_start(true);
+        }
+        
+    },[]);
+
+
+    const onChange_recruit_usedate_end = useCallback((e) => {
+        const usedate_end_current=e.target.value;
+        set_usedate_end(usedate_end_current);
+
+        if(usedate_end_current === ""){
+            set_is_usedate_end(false);
+        }
+        else{
+            set_is_usedate_end(true);
+        }
+        
+    },[]);
+
+
+    const onChange_recruit_contact = useCallback((e) => {
+        const contact_current=e.target.value;
+        set_contact(contact_current);
+
+        if(contact_current === ""){
+            set_is_contact(false);
+        }
+        else{
+            set_is_contact(true);
+        }
+        
+    },[]);
+
+        
+    const onChange_recruit_content = useCallback((e) => {
+        const content_current=e.target.value;
+        set_content(content_current);
+
+        if(content_current === ""){
+            set_is_content(false);
+        }
+        else{
+            set_is_content(true);
+        }
+        
+    },[]);
+
+  
             
     
         return ( 
