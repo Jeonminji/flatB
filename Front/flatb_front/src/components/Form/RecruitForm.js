@@ -158,7 +158,91 @@ const RecruitForm = (props) => {
         
     },[]);
 
-  
+    // 글쓰기 모달 submit
+    const contentSubmit = useCallback(
+        async (e) => {
+            e.preventDefault()
+            if(!boardNo){
+                if(!is_title||!is_platformname||!is_totalcount||!is_currentcount||
+                    !is_usedate_start|| !is_usedate_end || !is_contact || !is_content){
+                        alert("'제목, 플랫폼 명, 모집 인원, 사용 기간, 연락 수단, 한마디를 입력했는지 확인해주세요");
+                    }
+                else{
+                    try {
+                        await axios({
+                        method: "POST",
+                        url: '/recruitmentOtt/write',
+                        data:{ 
+                            title: recruit_title,
+                            platformname: recruit_platformname,
+                            totalcount: recruit_totalcount,
+                            currentcount: recruit_currentcount,
+                            usedate_end: recruit_usedate_end,
+                            usedate_start: recruit_usedate_start,
+                            contact: recruit_contact,
+                            content: recruit_content,
+                            writer_id:"test1"
+                            }
+                        })
+                        .then((res) => {
+                            if(res.status===201){
+                                alert("글쓰기 성공하셨습니다.");
+                                window.location.reload();            
+                            }
+                            else{
+                                alert("글쓰기 실패");
+                            }
+                        
+                        })
+                    }catch(err){
+                        console.error(err)
+                        }
+                    }
+            }
+            else{
+                if(!is_title||!is_platformname||!is_totalcount||!is_currentcount||
+                    !is_usedate_start|| !is_usedate_end || !is_contact || !is_content){
+                        alert("'제목, 플랫폼 명, 모집 인원, 사용 기간, 연락 수단, 한마디를 입력했는지 확인해주세요");
+                    }
+                else{
+                    try {
+                        await axios({
+                        method: "PUT",
+                        url: '/recruitmentOtt/update/'+boardNo,
+                        data:{ 
+                            title: recruit_title,
+                            platformname: recruit_platformname,
+                            totalcount: recruit_totalcount,
+                            currentcount: recruit_currentcount,
+                            usedate_end: recruit_usedate_end,
+                            usedate_start: recruit_usedate_start,
+                            contact: recruit_contact,
+                            content: recruit_content
+                            }
+                        })
+                        .then((res) => {
+                            if(res.status===200){
+                                alert("글수정에 성공하셨습니다.");
+                                window.location.reload();            
+                            }
+                            else{
+                                alert("글수정 실패");
+                            }
+                        
+                        })
+                    }catch(err){
+                        console.error(err)
+                        }
+                    }
+            }
+          
+            },
+        [recruit_title, recruit_platformname, recruit_totalcount, 
+        recruit_currentcount, recruit_usedate_start, recruit_usedate_end, 
+        recruit_contact, recruit_content, is_title, is_platformname, 
+        is_totalcount, is_currentcount, is_usedate_start, is_usedate_end, 
+        is_contact, is_content]
+      )
             
     
         return ( 
