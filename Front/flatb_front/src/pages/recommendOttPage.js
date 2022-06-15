@@ -76,7 +76,18 @@ const RecommendOttPage = () => {
     }
     else if((questionNum+1)>questionTotal){
 
-
+        const totalScore = {
+            "netflix":netflixTotal,
+            "tving":tvingTotal,
+            "watcha":watchaTotal,
+            "wavve":wavveTotal,
+            "disneyplus":disneyTotal,
+            "laftel":laftelTotal
+        }
+        
+        const maxScore = Math.max(netflixTotal,tvingTotal,watchaTotal,wavveTotal,disneyTotal,laftelTotal);
+        const platforms = Object.keys(totalScore).filter(key => totalScore[key] === maxScore);
+        
         return (
             <>
             
