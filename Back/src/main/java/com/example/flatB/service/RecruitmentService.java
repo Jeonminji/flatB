@@ -2,8 +2,10 @@ package com.example.flatB.service;
 
 import com.example.flatB.domain.dto.RecruitmentSaveDto;
 import com.example.flatB.domain.dto.RecruitmentUpdateDto;
+import com.example.flatB.domain.entity.OttEntity;
 import com.example.flatB.domain.entity.RecruitmentEntity;
 import com.example.flatB.domain.entity.UserEntity;
+import com.example.flatB.repository.OttRepository;
 import com.example.flatB.repository.RecruitmentRepository;
 import com.example.flatB.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +19,42 @@ import java.util.List;
 public class RecruitmentService {
     private final UserRepository userRepository;
     private final RecruitmentRepository recruitmentRepository;
+    private final OttRepository ottRepository;
 
     //글 작성
     @Transactional
     public String post(RecruitmentSaveDto recruitmentSaveDto, String userId) {
         UserEntity userEntity = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalAccessError(userId + ": 해당 사용자가 존재하지 않습니다."));
+
+        OttEntity ottEntity = ottRepository.findByOttName(recruitmentSaveDto.getPlatformname())
+                .orElseThrow(() -> new IllegalAccessError("해당 플랫폼이 존재하지 않습니다."));
+
         recruitmentSaveDto.setUserEntity(userEntity);
+        recruitmentSaveDto.setOttEntity(ottEntity);
         recruitmentRepository.save(recruitmentSaveDto.toEntity());
         return "SUCCESS";
+    }
+
+    //인원모집 게시판 전체 글 조회
+    @Transactional
+    public List<RecruitmentEntity> getRecruitmentBoardsAll(){
+        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAll();
+        return recruitmentEntities;
+    }
+
+    @Transactional
+    public List<RecruitmentEntity> getRecruitingAllBoards(){
+        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByTotalcountEqualsCurrentcount();
+        return recruitmentEntities;
     }
 
     //전체 글 조회(플랫폼별)
     @Transactional
     public List<RecruitmentEntity> getRecruitmentBoards(String ott_platformname) {
-        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByPlatformnameOrderByRegdateDesc(ott_platformname);
+        OttEntity ottEntity = ottRepository.findByOttName(ott_platformname)
+                .orElseThrow(() -> new IllegalAccessError(ott_platformname + ": 해당 플랫폼이 존재하지 않습니다."));
+        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByOttEntityOrderByRegdateDesc(ottEntity);
         return recruitmentEntities;
     }
 
@@ -53,27 +76,32 @@ public class RecruitmentService {
     //모집중인 글 보기
     @Transactional
     public List<RecruitmentEntity> getRecruitingBoard(String ott_platformname) {
-        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByPlatformnameAndTotalcountEqualsCurrentcount(
-                ott_platformname);
+        OttEntity ottEntity = ottRepository.findByOttName(ott_platformname)
+                .orElseThrow(() -> new IllegalAccessError(ott_platformname + ": 해당 플랫폼이 존재하지 않습니다."));
+        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByOttEntityAndTotalcountEqualsCurrentcount(
+                ottEntity);
         return recruitmentEntities;
     }
 
     //수정, 삭제를 위한 특정 리뷰 조회
     @Transactional
-    public RecruitmentEntity getRecruitmentBoard(Long boardNo, String userId) {
+    public RecruitmentEntity getRecruitmentBoard(Long boardNo) {
         RecruitmentEntity recruitmentEntity = recruitmentRepository.findByBoardNo(boardNo)
-                .orElseThrow(() -> new IllegalAccessError(boardNo + ": 해당 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalAccessError(boardNo + ": 해당 게시글이 존재하지 않습니다."));
         return recruitmentEntity;
     }
 
     //글 수정
     @Transactional
-    public String update(Long boardNo, RecruitmentUpdateDto recruitmentUpdateDto, String userId) {
+    public String update(Long boardNo, RecruitmentUpdateDto recruitmentUpdateDto) {
         RecruitmentEntity recruitmentEntity = recruitmentRepository.findByBoardNo(boardNo)
                 .orElseThrow(() -> new IllegalAccessError(boardNo + ": 해당 게시글이 존재하지 않습니다."));
 
+        OttEntity ottEntity = ottRepository.findByOttName(recruitmentUpdateDto.getPlatformname())
+                .orElseThrow(() -> new IllegalAccessError( "해당 플랫폼이 존재하지 않습니다."));
+
         recruitmentEntity.update(recruitmentUpdateDto.getTitle(), recruitmentUpdateDto.getContent(),
-                recruitmentUpdateDto.getPlatformname(), recruitmentUpdateDto.getTotalcount(),
+                ottEntity, recruitmentUpdateDto.getTotalcount(),
                 recruitmentUpdateDto.getCurrentcount(), recruitmentUpdateDto.getUsedateStart(),
                 recruitmentUpdateDto.getUsedateEnd(), recruitmentUpdateDto.getContact());
 
@@ -81,7 +109,7 @@ public class RecruitmentService {
     }
 
     //글 삭제
-    public String delete(Long boardNo, String userId) {
+    public String delete(Long boardNo) {
         RecruitmentEntity recruitmentEntity = recruitmentRepository.findByBoardNo(boardNo)
                 .orElseThrow(() -> new IllegalAccessError(boardNo + ": 해당 게시글이 존재하지 않습니다."));
         recruitmentRepository.delete(recruitmentEntity);

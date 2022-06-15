@@ -11,8 +11,6 @@ import com.example.flatB.service.MusicRecService;
 import com.example.flatB.service.ReviewMusicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +49,7 @@ public class ReviewMusicController {
 
     //플랫폼별 리뷰 조회
     @GetMapping("/{platformname}")
-    public ResponseEntity getBoards(@PageableDefault(size = 10) Pageable pageable, @PathVariable String platformname,
+    public ResponseEntity getBoards(@PathVariable String platformname,
                                     @RequestParam(required = false) boolean latestOrder,
                                     @RequestParam(required = false) boolean totalPoints,
                                     @RequestParam(required = false) boolean recOrder) {
@@ -92,16 +90,12 @@ public class ReviewMusicController {
             boardList.sort((a, b) -> b.getRecommendations() - a.getRecommendations());
         }
 
-        int start = (int) pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > boardList.size() ? boardList.size() : (start + pageable.getPageSize());
-        Page<ReviewMusicResponseDto> responseDtos = new PageImpl<>(boardList.subList(start, end), pageable, boardList.size());
-
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, responseDtos), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
     }
 
     //내가 쓴 모든 리뷰 조회
     @GetMapping("/my")
-    public ResponseEntity getBoardByUser(@PageableDefault(size = 10) Pageable pageable, Principal principal) {
+    public ResponseEntity getBoardByUser(Principal principal) {
         if (principal.getName().isEmpty()) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
@@ -111,11 +105,7 @@ public class ReviewMusicController {
         List<ReviewMusicEntity> reviewMusicEntities = reviewMusicService.getBoardsByUser(userEntity.get());
         List<ReviewMusicResponseDto> boardList = ReviewMusicResponseDto.ofEntities(reviewMusicEntities);
 
-        int start = (int) pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > boardList.size() ? boardList.size() : (start + pageable.getPageSize());
-        Page<ReviewMusicResponseDto> responseDtos = new PageImpl<>(boardList.subList(start, end), pageable, boardList.size());
-
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, responseDtos), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
     }
 
     //리뷰 수정 위해 원래 값 가져오기
@@ -126,7 +116,7 @@ public class ReviewMusicController {
                     , HttpStatus.NOT_FOUND);
         }
 
-        ReviewMusicEntity reviewMusicEntity = reviewMusicService.getBoard(boardNo, principal.getName());
+        ReviewMusicEntity reviewMusicEntity = reviewMusicService.getBoard(boardNo);
 
         if (checkAuthority(reviewMusicEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
@@ -147,13 +137,13 @@ public class ReviewMusicController {
                     , HttpStatus.NOT_FOUND);
         }
 
-        ReviewMusicEntity reviewMusicEntity = reviewMusicService.getBoard(boardNo, principal.getName());
+        ReviewMusicEntity reviewMusicEntity = reviewMusicService.getBoard(boardNo);
         if (checkAuthority(reviewMusicEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
         }
 
-        if(reviewMusicService.update(boardNo, reviewMusicUpdateDto, principal.getName()).equals("SUCCESS")) {
+        if(reviewMusicService.update(boardNo, reviewMusicUpdateDto).equals("SUCCESS")) {
             return new ResponseEntity(DefaultRes.res(StatusCode.CREATED, ResponseMessage.POST_UPDATE, reviewMusicUpdateDto),
                     HttpStatus.CREATED);
         }
@@ -170,13 +160,13 @@ public class ReviewMusicController {
                     , HttpStatus.NOT_FOUND);
         }
 
-        ReviewMusicEntity reviewMusicEntity = reviewMusicService.getBoard(boardNo, principal.getName());
+        ReviewMusicEntity reviewMusicEntity = reviewMusicService.getBoard(boardNo);
         if (checkAuthority(reviewMusicEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
         }
 
-        if (reviewMusicService.delete(boardNo, principal.getName()).equals("SUCCESS")) {
+        if (reviewMusicService.delete(boardNo).equals("SUCCESS")) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.POST_DELETE),
                     HttpStatus.NO_CONTENT);
         }
@@ -220,5 +210,23 @@ public class ReviewMusicController {
         if(!reviewMusicEntity.getUserEntity().getUserId().equals(userId))
             return ResponseMessage.NOT_FOUND_USER;
         return ResponseMessage.READ_USER;
+    }
+
+    //글 수정 권한 확인
+    @GetMapping("/update/check/{boardNo}")
+    public ResponseEntity updateCheckAuthority(@PathVariable Long boardNo, Principal principal) {
+        if (principal.getName().isEmpty()) {
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
+                    , HttpStatus.NOT_FOUND);
+        }
+
+        ReviewMusicEntity reviewMusicEntity = reviewMusicService.getBoard(boardNo);
+
+        if (checkAuthority(reviewMusicEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) { //권한 확인
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
+                    , HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ), HttpStatus.OK);
     }
 }
