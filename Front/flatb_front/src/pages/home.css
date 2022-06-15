@@ -1,0 +1,50 @@
+.home_wrap{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+}
+.recommendChoose{
+    display: flex;
+    justify-content:center;
+}
+.recommendChoose a{
+    width: 400px;
+    height: 400px;
+    margin: 20px;  
+}
+.choosePlatform{
+    width: 100%;
+    height: 100%;
+    font-size: 30px;
+    font-family: "CookieRun";
+    font-weight: 700;
+    margin: 0px;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+    border: 3px solid #DE4D31;
+    border-radius: 10px;
+    letter-spacing: 1.6px;
+}
+.recommendSkip{
+    display: flex;
+    justify-content:center;
+   
+    
+}
+.skipBtn{
+    width: 100px;
+    height: 60px;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    border-radius: 10px;
+    background-color:#DE4D31;
+    color: white;
+    font-size: 24px;
+    font-family: "CookieRun";
+    font-weight: 700;
+
+}

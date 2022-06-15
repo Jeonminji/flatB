@@ -1,0 +1,16 @@
+.recommendBtn{
+    width: 250px;
+    height: 80px;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    margin: 10px;
+    color: #DE4D31;
+    background-color: white;
+    align-items: center;
+    font-family: "CookieRun";
+    font-weight: 400;
+    font-size: 1.5rem;
+    text-align: center;
+    border: 5px solid #DE4D31;
+    white-space:pre-line;
+  }
