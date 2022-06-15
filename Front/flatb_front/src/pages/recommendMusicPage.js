@@ -76,7 +76,18 @@ const RecommendMusicPage = () => {
     }
     else if((questionNum+1)>questionTotal){
 
-    
+        const totalScore = {
+            "bugs":bugsTotal,
+            "melon":melonTotal,
+            "youtubemusic":youtubeTotal,
+            "spotify":spotifyTotal,
+            "flo":floTotal,
+            "genie":genieTotal
+        }
+        
+        const maxScore = Math.max(bugsTotal,melonTotal,youtubeTotal,spotifyTotal,floTotal,genieTotal);
+        const platforms = Object.keys(totalScore).filter(key => totalScore[key] === maxScore);
+        
         return (
             <>
             
