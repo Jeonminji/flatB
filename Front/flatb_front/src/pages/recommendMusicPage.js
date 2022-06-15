@@ -8,7 +8,54 @@ import Loading from "../components/Question/Loading"
 import RecommendResult from "../components/Question/RecommendResult"
 
 const RecommendMusicPage = () => {
-  
+    const questionTotal = MusicQuestion.length;
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(false);
+    const [questionNum, setQuestionNum] = useState(0);
+    const [bugsTotal, setbugsTotal] = useState(0);
+    const [melonTotal, setmelonTotal] = useState(0);
+    const [youtubeTotal, setyoutubeTotal] = useState(0);
+    const [spotifyTotal, setspotifyTotal] = useState(0);
+    const [floTotal, setfloTotal] = useState(0);
+    const [genieTotal, setgenieTotal] = useState(0)
+    
+
+    const onScoreChange = (choose) => {
+        const type = MusicQuestion[questionNum].answers[choose].type;
+        const score = MusicQuestion[questionNum].answers[choose].score;
+
+        for(const i of type){
+            if(i==="벅스"){
+                setbugsTotal(bugsTotal+score);
+            }
+            else if(i==="멜론"){
+                setmelonTotal(melonTotal+score);
+            }
+            else if(i==="유튜브뮤직"){
+                setyoutubeTotal(youtubeTotal+score);
+            }
+            else if(i==="스포티파이"){
+                setspotifyTotal(spotifyTotal+score);
+            }
+            else if(i==="플로"){
+                setfloTotal(floTotal+score);
+            }
+            else if(i==="지니"){
+                setgenieTotal(genieTotal+score);
+            }
+        }
+
+        if(questionNum ===(questionTotal-1)){
+            setLoading(true);
+            setTimeout(function(){ 
+                setLoading(false);
+                setResult(true);
+            },3000);
+        }
+
+        setQuestionNum(questionNum + 1);
+       
+    }
 
     if ((questionNum+1) <= questionTotal ){
     
@@ -29,7 +76,7 @@ const RecommendMusicPage = () => {
     }
     else if((questionNum+1)>questionTotal){
 
-        
+    
         return (
             <>
             
