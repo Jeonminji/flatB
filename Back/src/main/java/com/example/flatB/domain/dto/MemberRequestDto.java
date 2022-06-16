@@ -1,18 +1,24 @@
 package com.example.flatB.domain.dto;
 
+import com.example.flatB.domain.entity.Authority;
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.UserEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
-@Setter
-public class UserDto {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class MemberRequestDto {
     @NotBlank(message = "아이디를 입력해주세요.")
     private String userId;
 
@@ -37,18 +43,21 @@ public class UserDto {
 
     private LocalDateTime join_date;
 
-    public UserEntity toEntity() {
-        UserEntity userEntity = UserEntity.builder()
+    public Member toMember(PasswordEncoder passwordEncoder) {
+        return Member.builder()
                 .userId(userId)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .name(name)
                 .nickname(nickname)
                 .contact(contact)
                 .age(age)
                 .gender(gender)
                 .join_date(LocalDateTime.now())
+                .authority(Authority.ROLE_USER)
                 .build();
-        return userEntity;
     }
 
+    public UsernamePasswordAuthenticationToken toAuthentication() {
+        return new UsernamePasswordAuthenticationToken(userId, password);
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.flatB.domain.dto;
 
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.ReviewMusicEntity;
-import com.example.flatB.domain.entity.UserEntity;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -25,7 +25,7 @@ public class ReviewMusicSaveDto { //save request
 
     private String musicContent;
 
-    private UserEntity userEntity;
+    private Member member;
 
     private LocalDateTime musicRegdate;
 
@@ -37,7 +37,7 @@ public class ReviewMusicSaveDto { //save request
                 .musicServicepoints(musicServicepoints)
                 .musicTotalpoints(musicTotalpoints)
                 .musicContent(musicContent)
-                .userEntity(userEntity)
+                .member(member)
                 .musicRegdate(LocalDateTime.now())
                 .build();
         return reviewMusicEntity;

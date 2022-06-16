@@ -49,7 +49,7 @@ public class MusicTestController {
         MusicEntity musicEntity = musicTestService.getPlatform(music_platformname);
         MusicDto musicDto = MusicDto.ofEntity(musicEntity);
 
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.CRAWLLING_SUCCESS, musicDto),
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.IMAGE_SUCCESS, musicDto),
                 HttpStatus.OK);
     }
 }

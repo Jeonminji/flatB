@@ -45,7 +45,7 @@ public class RecruitmentEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
-    private UserEntity userEntity;
+    private Member member;
 
     @CreationTimestamp
     @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")

@@ -39,7 +39,7 @@ public class RecruitmentResponseDto { //보여주는거
         this.usedateStart = recruitmentEntity.getUsedateStart();
         this.usedateEnd = recruitmentEntity.getUsedateEnd();
         this.contact = recruitmentEntity.getContact();
-        this.nickname = recruitmentEntity.getUserEntity().getNickname();
+        this.nickname = recruitmentEntity.getMember().getNickname();
         this.regdate = recruitmentEntity.getRegdate();
     }
 

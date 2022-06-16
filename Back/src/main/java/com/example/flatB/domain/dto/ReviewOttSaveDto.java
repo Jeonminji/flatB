@@ -1,7 +1,7 @@
 package com.example.flatB.domain.dto;
 
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.ReviewOttEntity;
-import com.example.flatB.domain.entity.UserEntity;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ public class ReviewOttSaveDto { //save request
 
     private String ottContent;
 
-    private UserEntity userEntity;
+    private Member member;
 
     private LocalDateTime ottRegdate;
 
@@ -40,7 +40,7 @@ public class ReviewOttSaveDto { //save request
                 .ottServicepoints(ottServicepoints)
                 .ottTotalpoints(ottTotalpoints)
                 .ottContent(ottContent)
-                .userEntity(userEntity)
+                .member(member)
                 .ottRegdate(LocalDateTime.now())
                 .build();
         return reviewOttEntity;

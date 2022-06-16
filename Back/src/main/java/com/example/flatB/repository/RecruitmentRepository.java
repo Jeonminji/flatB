@@ -1,8 +1,8 @@
 package com.example.flatB.repository;
 
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.OttEntity;
 import com.example.flatB.domain.entity.RecruitmentEntity;
-import com.example.flatB.domain.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ public interface RecruitmentRepository extends JpaRepository<RecruitmentEntity, 
     Optional<RecruitmentEntity> findByBoardNo(Long boardNo);
 
     List<RecruitmentEntity> findAllByOttEntityOrderByRegdateDesc(OttEntity ottEntity); //플랫폼별
-    List<RecruitmentEntity> findAllByUserEntityOrderByBoardNoDesc(UserEntity userEntity); //내 글 보기
+    List<RecruitmentEntity> findAllByMemberOrderByBoardNoDesc(Member member); //내 글 보기
 
     //모집중필터
     @Query("select r from RecruitmentEntity r where totalcount!=currentcount and platformname=?1")
