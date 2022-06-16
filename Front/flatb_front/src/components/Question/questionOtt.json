@@ -1,0 +1,244 @@
+[
+    {
+        "question": "더 선호하는 것은?",
+        "answers": [
+            {
+                "type":["tving","wavve"],
+                "text": "예능",
+                "score": 7
+            },
+            {
+                "type":["tving","wavve","netflix","watcha"],
+                "text": "드라마",
+                "score": 7
+            },
+            {
+                "type":["netflix","watcha","disney","laftel"],
+                "text": "영화",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "question": "더 선호하는 것은?",
+        "answers": [
+            {
+                "type":["netflix","watcha","laftel","wavve"],
+                "text": "한국 / 일본 애니메이션",
+                "score": 7
+            },
+            {
+                "type":["netflix","disney"],
+                "text": "그 외 애니메이션",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "프로필 잠금 여부",
+        "answers": [
+            {
+                "type":["disney","netflix","tving"],
+                "text": "필요하다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "스트리밍 서비스",
+        "answers": [
+            {
+                "type":["tving","wavve"],
+                "text": "필요하다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "오리지널 콘텐츠",
+        "answers": [
+            {
+                "type":["tving","wavve","disney","netflix","watcha"],
+                "text": "좋아한다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "아니다",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "나는 플랫폼에 애니메이션만 있었으면 좋겠다",
+        "answers": [
+            {
+                "type":["laftel"],
+                "text": "맞다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    },
+    {
+        "question": "더 선호하는 것은?",
+        "answers": [
+            {
+                "type":["watcha","wavve","disney"],
+                "text": "시리즈 영화 \n ex) 해리포터, 반지의 제왕",
+                "score": 7
+            },
+            {
+                "type":["netflix","tving","laftel"],
+                "text": "단편 영화",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "재생 배속 기능",
+        "answers": [
+            {
+                "type":["tving","wavve","laftel","netflix","watcha"],
+                "text": "필요하다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "플랫폼 사용외의 추가 결제 ex) 영화 소장",
+        "answers": [
+            {
+                "type":["netflix","disney","watcha"],
+                "text": "안 괜찮다",
+                "score": 7
+            },
+            {
+                "type":["netflix","tving","laftel"],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "키즈 기능",
+        "answers": [
+            {
+                "type":["tving","wavve","disney","netflix","watcha"],
+                "text": "필요하다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "더 선호하는 것은?",
+        "answers": [
+            {
+                "type":["disney","laftel","watcha"],
+                "text": "2D 영화",
+                "score": 7
+            },
+            {
+                "type":["tving","wavve","disney","netflix","watcha"],
+                "text": "실사 영화",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "더 선호하는 것은?",
+        "answers": [
+            {
+                "type":["tving"],
+                "text": "tvN, Mnet",
+                "score": 7
+            },
+            {
+                "type":["wavve"],
+                "text": "지상파",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "더 선호하는 것은?",
+        "answers": [
+            {
+                "type":["netflix"],
+                "text": "넷플릭스 오리지널 콘텐츠",
+                "score": 7
+            },
+            {
+                "type":["disney"],
+                "text": "디즈니 오리지널 콘텐츠",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "첫 가입 혜택",
+        "answers": [
+            {
+                "type":["wavve","laftel","watcha"],
+                "text": "필요하다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    }
+    ,
+    {
+        "question": "영상 재생 중 화질 변경 기능",
+        "answers": [
+            {
+                "type":["tving","laftel","wavve"],
+                "text": "필요하다",
+                "score": 7
+            },
+            {
+                "type":[],
+                "text": "상관없다",
+                "score": 7
+            }
+        ]
+    }
+]
