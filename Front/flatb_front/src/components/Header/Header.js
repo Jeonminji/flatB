@@ -1,20 +1,58 @@
-import React,{Component} from 'react'; 
-import { Link } from 'react-router-dom';
-import Logo from '../../img/flatB_logo.png'
-import "./Header.css"
+import React,{useState, useEffect} from 'react'; 
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Logo from '../../img/flatB_logo.png';
+import "./Header.css";
 
-class Header extends Component { 
-    render(){
+const Header= (props) =>{ 
+
+    const [loginState, setLoginState] = useState("");
+    
+    //페이지 이동
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        if(props.isLogin){
+            setLoginState("logout");
+        }
+        else{
+            setLoginState("login");
+        }
+
+    },[props.isLogin] )
+
+    const testClick=()=>{
+        if(loginState==="login"){
+            navigate("/login");
+        }
+        else{
+            axios({
+            method: "get",
+            url: "/member/me",
+            responseType: "json"
+             }).then((res)=>{
+               setLoginState("login");
+                props.loginCallBack(false);
+                localStorage.clear();
+                alert("로그아웃 되었습니다.");
+                
+            
+        });
+        }
+    }
+
+    
         return ( 
             <div className = "Header"> 
                 <div className="Header_logo"> 
                     <Link to="/"> 
-                            <img className="logo" src={Logo}/>
+                            <img className="logo" src={Logo} alt="로고 이미지"/>
                     </Link>
                 </div>
                 <div className="category_box">
                     <div className="login_box">
-                        <Link to="/login"> <div>login</div> </Link>
+                        <div className="loginState" onClick={testClick} >{loginState}</div>
                         <div> | </div>
                         <Link to="/report"> <div>🚨</div> </Link>    
                     </div>
@@ -27,7 +65,7 @@ class Header extends Component {
                 </div>
             </div> 
             );
-    }
+    
      
 } 
 
