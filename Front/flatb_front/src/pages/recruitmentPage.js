@@ -66,6 +66,8 @@ const Recruitment=(props) =>{
         }).then((res)=>{
             console.log(res);
             setRecruitItem({items:res.data.data});
+        }).catch((err)=>{
+            navigate("/login");
         });
         
     }

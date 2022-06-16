@@ -52,13 +52,15 @@ const RecruitmentCategoryPage=(props) =>{
     // 내글 보기
     const myContentGet =()=>{
        
-        axios({
+        aaxios({
             method: "get",
-            url: "/recruitmentOtt/"+category+"/my",
+            url: "/recruitmentOtt/my",
             responseType: "json"
         }).then((res)=>{
-            console.log(res.data.data);
+            console.log(res);
             setRecruitItem({items:res.data.data});
+        }).catch((err)=>{
+            navigate("/login");
         });
         
     }
