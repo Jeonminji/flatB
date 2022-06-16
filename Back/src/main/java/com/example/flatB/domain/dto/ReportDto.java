@@ -1,7 +1,7 @@
 package com.example.flatB.domain.dto;
 
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.ReportEntity;
-import com.example.flatB.domain.entity.UserEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class ReportDto {
     private String note;
     private String type;
     private String content;
-    private UserEntity user;
+    private Member member;
     private LocalDateTime date;
 
 
@@ -27,7 +27,7 @@ public class ReportDto {
                 .note(note)
                 .type(type)
                 .content(content)
-                .user(user)
+                .member(member)
                 .date(LocalDateTime.now())
                 .build();
 

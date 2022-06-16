@@ -1,8 +1,8 @@
 package com.example.flatB;
 
-import com.example.flatB.domain.dto.UserDto;
-import com.example.flatB.repository.UserRepository;
-import com.example.flatB.service.UserService;
+import com.example.flatB.domain.dto.MemberRequestDto;
+import com.example.flatB.repository.MemberRepository;
+import com.example.flatB.service.AuthService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class FlatBApplicationTests {
 	@Autowired
-	UserRepository userRepository;
+	MemberRepository memberRepository;
 	@Autowired
-	UserService userService;
+	AuthService authService;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -25,44 +25,43 @@ class FlatBApplicationTests {
 
 	@Test
 	public void 회원가입_성공() {
-		UserDto userDto = UserDto.builder()
-				.userId("test1")
+		MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+				.userId("testsingnup")
 				.password(PASSWORD)
 				.name("유인희")
-				.nickname("test")
+				.nickname("회원가입테스트")
 				.age("20")
 				.contact("010-0000-0000")
 				.gender("여성")
 				.build();
-		userService.joinUser(userDto);
+
+		Assertions.assertEquals("Success", authService.joinUser(memberRequestDto));
 
 	}
 
 	@Test
 	public void 회원가입_중복아이디() {
-		UserDto userDto1 = UserDto.builder()
+		MemberRequestDto memberRequestDto1 = MemberRequestDto.builder()
 				.userId("test12") //아이디중복
 				.password(PASSWORD)
 				.name("유인희")
-				.nickname("테스트")
+				.nickname("중복아이디테스트")
 				.age("20")
 				.contact("010-0000-0000")
 				.gender("여성")
 				.build();
-
-		userService.joinUser(userDto1);
+//		authService.joinUser(memberRequestDto1);
 
 		IllegalStateException e = Assertions.assertThrows(IllegalStateException.class, () ->
-				userService.joinUser(userDto1));
-		System.out.println(e.getMessage());
-		//Assertions.assertEquals("이미 존재하는 아이디입니다.", e.getMessage());
+				authService.joinUser(memberRequestDto1));
+		Assertions.assertEquals("이미 존재하는 아이디입니다.", e.getMessage());
 
 	}
 
 	@Test
 	public void 회원가입_중복닉네임() {
-		UserDto userDto1 = UserDto.builder()
-				.userId("test3")
+		MemberRequestDto memberRequestDto1 = MemberRequestDto.builder()
+				.userId("test33")
 				.password(PASSWORD)
 				.name("유인희")
 				.nickname("닉네임테스트") //닉네임중복
@@ -71,12 +70,11 @@ class FlatBApplicationTests {
 				.gender("여성")
 				.build();
 
-		userService.joinUser(userDto1);
+//		authService.joinUser(memberRequestDto1);
 
 		IllegalStateException e = Assertions.assertThrows(IllegalStateException.class, () ->
-				userService.joinUser(userDto1));
-		System.out.println(e.getMessage());
-		//Assertions.assertEquals("이미 존재하는 닉네임입니다.", e.getMessage());
+				authService.joinUser(memberRequestDto1));
+		Assertions.assertEquals("이미 존재하는 닉네임입니다.", e.getMessage());
 
 	}
 }

@@ -49,7 +49,7 @@ public class OttTestController {
         OttEntity ottEntity = ottTestService.getPlatform(ott_platformname);
         OttDto ottDto = OttDto.ofEntity(ottEntity);
 
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.CRAWLLING_SUCCESS, ottDto),
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.IMAGE_SUCCESS, ottDto),
                 HttpStatus.OK);
     }
 }

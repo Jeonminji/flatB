@@ -3,12 +3,15 @@ package com.example.flatB.controller;
 import com.example.flatB.common.DefaultRes;
 import com.example.flatB.common.ResponseMessage;
 import com.example.flatB.common.StatusCode;
+import com.example.flatB.domain.dto.MemberResponseDto;
 import com.example.flatB.domain.dto.RecruitmentResponseDto;
 import com.example.flatB.domain.dto.RecruitmentSaveDto;
 import com.example.flatB.domain.dto.RecruitmentUpdateDto;
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.RecruitmentEntity;
 import com.example.flatB.domain.entity.UserEntity;
-import com.example.flatB.repository.UserRepository;
+import com.example.flatB.repository.MemberRepository;
+import com.example.flatB.service.MemberService;
 import com.example.flatB.service.RecruitmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,16 +27,18 @@ import java.util.Optional;
 @RequestMapping(value = "/recruitmentOtt")
 public class RecruitmentController {
     private final RecruitmentService recruitmentService;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     //글 작성
     @PostMapping("/write")
-    public ResponseEntity post(@RequestBody RecruitmentSaveDto recruitmentSaveDto, Principal principal) {
-        if (principal.getName().isEmpty()) {
+    public ResponseEntity post(@RequestBody RecruitmentSaveDto recruitmentSaveDto) {
+        MemberResponseDto member = memberService.getMyInfoBySecurity();
+        if (member.getUserId() == null) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 
-        if (recruitmentService.post(recruitmentSaveDto, principal.getName()).equals("SUCCESS")) {
+        if (recruitmentService.post(recruitmentSaveDto, member.getUserId()).equals("SUCCESS")) {
             return new ResponseEntity(DefaultRes.res(StatusCode.CREATED, ResponseMessage.POST_CREATED,
                     recruitmentSaveDto), HttpStatus.CREATED);
         }
@@ -105,13 +109,14 @@ public class RecruitmentController {
 
     //내 글 필터
     @GetMapping("/my")
-    public ResponseEntity getBoardsByUser( Principal principal) {
-        if (principal.getName().isEmpty()) {
+    public ResponseEntity getBoardsByUser() {
+        MemberResponseDto member = memberService.getMyInfoBySecurity();
+        if (member.getUserId() == null) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 
-        Optional<UserEntity> userEntity = userRepository.findByUserId(principal.getName());
-        List<RecruitmentEntity> recruitmentEntities = recruitmentService.getRecruitmentBoardByUser(userEntity.get());
+        Optional<Member> memberEntity = memberRepository.findByUserId(member.getUserId());
+        List<RecruitmentEntity> recruitmentEntities = recruitmentService.getRecruitmentBoardByUser(memberEntity.get());
         List<RecruitmentResponseDto> boardList = RecruitmentResponseDto.ofEntities(recruitmentEntities);
 
         return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.POST_READ, boardList), HttpStatus.OK);
@@ -119,13 +124,15 @@ public class RecruitmentController {
 
     //리뷰 수정 위해 원래 값 가져오기
     @GetMapping("/update/{boardNo}")
-    public ResponseEntity getRecruitmentBoard(@PathVariable Long boardNo, Principal principal) {
-        if (principal.getName().isEmpty()) {
-            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
+    public ResponseEntity getRecruitmentBoard(@PathVariable Long boardNo) {
+        MemberResponseDto member = memberService.getMyInfoBySecurity();
+        if (member.getUserId() == null) {
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
+                    , HttpStatus.NOT_FOUND);
         }
         RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
 
-        if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
+        if (checkAuthority(recruitmentEntity, member.getUserId()).equals(ResponseMessage.NOT_FOUND_USER)) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 
@@ -137,16 +144,16 @@ public class RecruitmentController {
 
     //리뷰 수정
     @PutMapping("/update/{boardNo}")
-    public ResponseEntity updateBoard(@PathVariable Long boardNo, @RequestBody RecruitmentUpdateDto recruitmentUpdateDto,
-                                      Principal principal) {
-        if (principal.getName().isEmpty()) {
+    public ResponseEntity updateBoard(@PathVariable Long boardNo, @RequestBody RecruitmentUpdateDto recruitmentUpdateDto) {
+        MemberResponseDto member = memberService.getMyInfoBySecurity();
+        if (member.getUserId() == null) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
         }
 
         RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
 
-        if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
+        if (checkAuthority(recruitmentEntity, member.getUserId()).equals(ResponseMessage.NOT_FOUND_USER)) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 
@@ -161,15 +168,15 @@ public class RecruitmentController {
 
     //리뷰 삭제
     @DeleteMapping("/delete/{boardNo}")
-    public ResponseEntity deleteBoard(@PathVariable Long boardNo, Principal principal) {
-        if (principal.getName().isEmpty()) {
+    public ResponseEntity deleteBoard(@PathVariable Long boardNo) {
+        MemberResponseDto member = memberService.getMyInfoBySecurity();
+        if (member.getUserId() == null) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
                     , HttpStatus.NOT_FOUND);
         }
-
         RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
 
-        if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
+        if (checkAuthority(recruitmentEntity, member.getUserId()).equals(ResponseMessage.NOT_FOUND_USER)) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 
@@ -184,21 +191,34 @@ public class RecruitmentController {
 
     //권한 확인
     private String checkAuthority(RecruitmentEntity recruitmentEntity, String userId) {
-        if(!recruitmentEntity.getUserEntity().getUserId().equals(userId))
+        if(!recruitmentEntity.getMember().getUserId().equals(userId))
             return ResponseMessage.NOT_FOUND_USER;
         return ResponseMessage.READ_USER;
     }
 
-    //글 수정 권한 확인
-    @GetMapping("/update/check/{boardNo}")
-    public ResponseEntity updateCheckAuthority(@PathVariable Long boardNo, Principal principal) {
-        if (principal.getName().isEmpty()) {
-            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
+    //글 쓰기 권한 확인
+    @GetMapping("/write/check")
+    public ResponseEntity writeCheckAuthority() {
+        MemberResponseDto member = memberService.getMyInfoBySecurity();
+        if (member.getUserId() == null) {
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
+                    , HttpStatus.NOT_FOUND);
         }
 
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER), HttpStatus.OK);
+    }
+
+    //글 수정 권한 확인
+    @GetMapping("/update/check/{boardNo}")
+    public ResponseEntity updateCheckAuthority(@PathVariable Long boardNo) {
+        MemberResponseDto member = memberService.getMyInfoBySecurity();
+        if (member.getUserId() == null) {
+            return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER)
+                    , HttpStatus.NOT_FOUND);
+        }
         RecruitmentEntity recruitmentEntity = recruitmentService.getRecruitmentBoard(boardNo);
 
-        if (checkAuthority(recruitmentEntity, principal.getName()).equals(ResponseMessage.NOT_FOUND_USER)) {
+        if (checkAuthority(recruitmentEntity, member.getUserId()).equals(ResponseMessage.NOT_FOUND_USER)) {
             return new ResponseEntity(DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER), HttpStatus.NOT_FOUND);
         }
 

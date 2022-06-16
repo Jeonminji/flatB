@@ -1,8 +1,8 @@
 package com.example.flatB.domain.dto;
 
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.OttEntity;
 import com.example.flatB.domain.entity.RecruitmentEntity;
-import com.example.flatB.domain.entity.UserEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class RecruitmentSaveDto { //저장
     private String usedateStart;
     private String usedateEnd;
     private String contact;
-    private UserEntity userEntity;
+    private Member member;
     private LocalDateTime regdate;
 
     public RecruitmentEntity toEntity() {
@@ -35,7 +35,7 @@ public class RecruitmentSaveDto { //저장
                 .usedateStart(usedateStart)
                 .usedateEnd(usedateEnd)
                 .contact(contact)
-                .userEntity(userEntity)
+                .member(member)
                 .regdate(LocalDateTime.now())
                 .build();
         return recruitmentEntity;

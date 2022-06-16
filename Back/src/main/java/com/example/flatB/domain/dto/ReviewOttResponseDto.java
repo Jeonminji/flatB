@@ -47,7 +47,7 @@ public class ReviewOttResponseDto { //response
         this.ottServicepoints = reviewOttEntity.getOttServicepoints();
         this.ottTotalpoints = reviewOttEntity.getOttTotalpoints();
         this.ottContent = reviewOttEntity.getOttContent();
-        this.ottNickname = reviewOttEntity.getUserEntity().getNickname();
+        this.ottNickname = reviewOttEntity.getMember().getNickname();
         this.ottRegdate = reviewOttEntity.getOttRegdate();
         this.ottModdate = reviewOttEntity.getOttModdate();
         this.recommendations = reviewOttEntity.getRecommendations().size();
