@@ -46,7 +46,7 @@ public class ReviewMusicResponseDto { //response
         this.musicServicepoints = reviewMusicEntity.getMusicServicepoints();
         this.musicTotalpoints = reviewMusicEntity.getMusicTotalpoints();
         this.musicContent = reviewMusicEntity.getMusicContent();
-        this.musicNickname = reviewMusicEntity.getUserEntity().getNickname();
+        this.musicNickname = reviewMusicEntity.getMember().getNickname();
         this.musicRegdate = reviewMusicEntity.getMusicRegdate();
         this.musicModdate = reviewMusicEntity.getMusicModdate();
         this.recommendations = reviewMusicEntity.getRecommendations().size();
