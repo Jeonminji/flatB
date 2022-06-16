@@ -18,11 +18,11 @@ public interface RecruitmentRepository extends JpaRepository<RecruitmentEntity, 
     List<RecruitmentEntity> findAllByMemberOrderByBoardNoDesc(Member member); //내 글 보기
 
     //모집중필터
-    @Query("select r from RecruitmentEntity r where totalcount!=currentcount and platformname=?1")
+    @Query("select r from RecruitmentEntity r where totalcount>currentcount and platformname=?1")
     List<RecruitmentEntity> findAllByOttEntityAndTotalcountEqualsCurrentcount(OttEntity ottEntity);
 
     //전체 글 모집중필터
-    @Query("select r from RecruitmentEntity r where totalcount!=currentcount")
+    @Query("select r from RecruitmentEntity r where totalcount>currentcount")
     List<RecruitmentEntity> findAllByTotalcountEqualsCurrentcount();
 
     List<RecruitmentEntity> findAll(); // 전체 리뷰 조회
