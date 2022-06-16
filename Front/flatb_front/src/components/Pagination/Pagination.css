@@ -1,0 +1,33 @@
+.nav{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin: 16px;
+}
+.navBtn{
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 0;
+  background: white;
+  color: black;
+  font-size: 1rem;
+}
+.navBtn:hover {
+    background: #DE4D31;
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
+
+.navBtn:disabled {
+background: grey;
+cursor: revert;
+transform: revert;
+}
+[aria-current="page"]{
+background: #DE4D31;
+font-weight: bold;
+cursor: revert;
+transform: revert;
+}
