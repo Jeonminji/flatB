@@ -7,7 +7,7 @@ import QuestionBtn from "../components/Btn/QuestionBtn"
 import Loading from "../components/Question/Loading"
 import RecommendResult from "../components/Question/RecommendResult"
 
-const RecommendOttPage = () => {
+const RecommendOttPage = (props) => {
     const questionTotal = OttQuestion.length;
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(false);
@@ -61,7 +61,7 @@ const RecommendOttPage = () => {
     
         return (
             <>
-                <Header/>
+                <Header isLogin={props.isLogin} loginCallBack={props.loginCallBack}/> 
                 <Question questionNum={questionNum+1} questionNum_end={questionTotal} question={OttQuestion[questionNum].question}>
     
                 {OttQuestion[questionNum].answers.map((answer,i)=>(
@@ -84,11 +84,12 @@ const RecommendOttPage = () => {
             "disneyplus":disneyTotal,
             "laftel":laftelTotal
         }
+        console.log(totalScore);
         
         const maxScore = Math.max(netflixTotal,tvingTotal,watchaTotal,wavveTotal,disneyTotal,laftelTotal);
+        console.log(maxScore);
         const platforms = Object.keys(totalScore).filter(key => totalScore[key] === maxScore);
-        
-         //결과 여러 개 일 경우 하나만 도출
+        console.log(platforms);
         const number = Math.floor(Math.random() * platforms.length);
         const platform = platforms[number];
 

@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 import Header from '../components/Header/Header';
 import "./home.css" 
-const Home=() =>{ 
+const Home=(props) =>{ 
 
     return ( 
         <> 
-            <Header /> 
+            <Header isLogin={props.isLogin} loginCallBack={props.loginCallBack}/> 
             <div className="home_wrap">
                 <div className="home_cont">
                     <div className="recommendChoose">
@@ -14,7 +14,7 @@ const Home=() =>{
                         <Link to="recommendMusic"><div className="choosePlatform">&nbsp;&nbsp;&nbsp;&nbsp;MUSIC 추천 <br/>테스트 받으러가기</div></Link>
                     </div>
                     <div className="recommendSkip">
-                        <Link to="/비교"><div className="skipBtn">skip</div></Link>
+                        <Link to="/compare"><div className="skipBtn">skip</div></Link>
                     </div>
 
                 </div>

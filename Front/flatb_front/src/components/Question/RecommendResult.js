@@ -7,17 +7,18 @@ import logo from "../../img/flatBCharacter.png"
 const RecommendResult = (props) => {
 
     const {recommend, platform}=props;
+  
 
     //페이지 이동
     const navigate = useNavigate();
     const onclick=(link)=>{
-        if(link=="retry"){
+        if(link==="retry"){
             window.location.reload();
         }
-        else if(link=="detail"){
+        else if(link==="detail"){
             navigate("/compare");
         }
-        
+
     }
     return (
         <div className="result_wrap">

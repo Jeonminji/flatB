@@ -4,12 +4,12 @@ import axios from 'axios';
 import "./RecruitItem.css";
 import Modals from '../Modal/Modal';
 import RecruitForm from '../../components/Form/RecruitForm'
-
 const RecruitItem = (props) =>{
     const {boardNo,ottLogo, title, content, platformname,totalcount, currentcount, usedateStart, usedateEnd, contact, nickname, regdate
      } = props.item;
     const rodWidth = (currentcount/totalcount)*100+"%";
     const [recruitmentSituation, setRecruitmentSituation] = useState();
+    
 
     useEffect(() =>{
         if(totalcount === currentcount){
@@ -19,7 +19,7 @@ const RecruitItem = (props) =>{
             setRecruitmentSituation("모집 중");
         }
         
-    })
+    },[totalcount,currentcount])
 
      // 상세 모달창
      const [modalrecruit_contentOpen, setcontentModalOpen] = useState(false);
@@ -47,19 +47,21 @@ const RecruitItem = (props) =>{
                         // 권한이 있는 경우 
                             setcontentModalOpen(false);
                             setModalUpdateOpen(true);
-                            window.location.reload();
 
                     }
                     else if(res.data.data.response==="회원을 찾을 수 없습니다."){
                         alert("수정 권한이 없습니다.");
                         setcontentModalOpen(false);
+                        window.location.reload();
                     }
                     else{
                         alert("오류 발생");
                         setcontentModalOpen(false);
                     }
                 })} catch (err) {
-                    console.error(err)
+                    alert("수정 권한이 없습니다.");
+                    setcontentModalOpen(false);
+                    window.location.reload();
                     }
                
             },
@@ -80,18 +82,16 @@ const RecruitItem = (props) =>{
                 })
                 .then((res) => {
                     console.log(res);
-                    if(res.data.data.response==="회원을 찾을 수 없습니다."){
-                        alert("삭제 권한이 없습니다.");
+                    if(res.status===204){
+                        alert("게시글이 삭제 되었습니다.");
                         setcontentModalOpen(false);
+                        window.location.reload();
                     }
-                    else{
-                        alert("삭제 성공");
-                            setcontentModalOpen(false);
-                            window.location.reload();
-
-                    }
+                    
                 })} catch (err) {
-                    console.error(err)
+                    alert("삭제 권한이 없습니다. \n본인이 작성한 글이 아닙니다.");
+                    setcontentModalOpen(false);
+                    window.location.reload();
                     }
                
             },
