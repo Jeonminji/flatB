@@ -52,7 +52,7 @@ const RecruitmentCategoryPage=(props) =>{
     // 내글 보기
     const myContentGet =()=>{
        
-        aaxios({
+        axios({
             method: "get",
             url: "/recruitmentOtt/my",
             responseType: "json"
