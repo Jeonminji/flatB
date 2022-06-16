@@ -3,7 +3,7 @@ import axios from 'axios';
 import "./RecruitForm.css"
 const RecruitForm = (props) => { 
     
-    const {close,boardNo, title, content, platformname,totalcount, currentcount, usedate_start, usedate_end, contact, writer_id, regdate} = props;
+    const {close,boardNo, title, content, platformname,totalcount, currentcount, usedate_start, usedate_end, contact} = props;
     // 제목
     const [recruit_title, set_title] = useState(title);
     const [is_title, set_is_title] = useState(false);
@@ -40,7 +40,7 @@ const RecruitForm = (props) => {
             set_is_contact(true);
             set_is_content(true);
         }
-    })
+    },[boardNo])
    
           
             
@@ -177,11 +177,10 @@ const RecruitForm = (props) => {
                             platformname: recruit_platformname,
                             totalcount: recruit_totalcount,
                             currentcount: recruit_currentcount,
-                            usedate_end: recruit_usedate_end,
-                            usedate_start: recruit_usedate_start,
+                            usedateEnd: recruit_usedate_end,
+                            usedateStart: recruit_usedate_start,
                             contact: recruit_contact,
-                            content: recruit_content,
-                            writer_id:"test1"
+                            content: recruit_content
                             }
                         })
                         .then((res) => {
@@ -214,18 +213,19 @@ const RecruitForm = (props) => {
                             platformname: recruit_platformname,
                             totalcount: recruit_totalcount,
                             currentcount: recruit_currentcount,
-                            usedate_end: recruit_usedate_end,
-                            usedate_start: recruit_usedate_start,
+                            usedateEnd: recruit_usedate_end,
+                            usedateStart: recruit_usedate_start,
                             contact: recruit_contact,
                             content: recruit_content
                             }
                         })
                         .then((res) => {
-                            if(res.status===200){
+                            if(res.status===201){
                                 alert("글수정에 성공하셨습니다.");
                                 window.location.reload();            
                             }
                             else{
+                                console.log(res);
                                 alert("글수정 실패");
                             }
                         
@@ -241,7 +241,7 @@ const RecruitForm = (props) => {
         recruit_currentcount, recruit_usedate_start, recruit_usedate_end, 
         recruit_contact, recruit_content, is_title, is_platformname, 
         is_totalcount, is_currentcount, is_usedate_start, is_usedate_end, 
-        is_contact, is_content]
+        is_contact, is_content,boardNo]
       )
             
     
@@ -269,23 +269,23 @@ const RecruitForm = (props) => {
             <div className="recruitPersonInputBox">
                 <label>
                     모집 인원
-                    <input type="text" value={close ? "get":recruit_currentcount}className="personnelInput" onChange={onChange_recruit_currentcount} placeholder="현재 인원 수(본인 제외)"/>
+                    <input type="text" value={close ? "":recruit_currentcount}className="personnelInput" onChange={onChange_recruit_currentcount} placeholder="현재 인원 수(본인 제외)"/>
                     / 
-                    <input type="text" className="personnelInput" value={close ? "get":recruit_totalcount} onChange={onChange_recruit_totalcount} placeholder="전체 모집 인원(본인 제외)"/>
+                    <input type="text" className="personnelInput" value={close ? "":recruit_totalcount} onChange={onChange_recruit_totalcount} placeholder="전체 모집 인원(본인 제외)"/>
                 </label>
             </div>
             <div className="recruitDateInputBox">
                 <label>
                     사용 기간
-                    <input type="date" value={close ? "get": recruit_usedate_start} className="dateInput" onChange={onChange_recruit_usedate_start}/>
+                    <input type="date" value={close ? "": recruit_usedate_start} className="dateInput" onChange={onChange_recruit_usedate_start}/>
                     ~
-                    <input type="date"  value={close ? "get": recruit_usedate_end} className="dateInput" onChange={onChange_recruit_usedate_end}/>
+                    <input type="date"  value={close ? "": recruit_usedate_end} className="dateInput" onChange={onChange_recruit_usedate_end}/>
                 </label>
             </div>
             <div className="recruitDateInputBox">
                 <label>
                     연락 수단
-                    <input type="text"  value={close ? "get": recruit_contact} className="contactInput" onChange={onChange_recruit_contact} placeholder="ex) 오픈카톡 링크 "/>
+                    <input type="text"  value={close ? "": recruit_contact} className="contactInput" onChange={onChange_recruit_contact} placeholder="ex) 오픈카톡 링크 "/>
 
                 </label>
             </div>
@@ -293,7 +293,7 @@ const RecruitForm = (props) => {
                 <div id="oneWord">
                     한 마디
                 </div>
-                <textarea type="text" value={close ? "get": recruit_content}className="onewordInput" onChange={onChange_recruit_content} placeholder="짧은 한마디( ex) 마음 맞는 분들인 경우 연장 가능합니다!)"/>
+                <textarea type="text" value={close ? "": recruit_content}className="onewordInput" onChange={onChange_recruit_content} placeholder="짧은 한마디( ex) 마음 맞는 분들인 경우 연장 가능합니다!)"/>
             </div>
             <div className="line"></div>
             <div className="recruitFormBtnBox">

@@ -44,6 +44,9 @@ body{
 .login_box div{
     margin-left: 10px
 }
+.loginState{
+    cursor: pointer;
+}
 
 .categories{
     height: 50%;
@@ -64,4 +67,21 @@ body{
 }
 .categories li:hover{
     color: #943d2c;
+}
+
+@media screen and (max-width: 768px) {
+
+    .Header{
+        flex-direction: column;
+    }
+    .category_box{
+        flex-direction: column;
+
+    }
+    .login_box{
+        display: none;
+    }
+    .categories{
+        flex-direction: column;
+    }
 }

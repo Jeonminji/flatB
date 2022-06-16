@@ -1,10 +1,10 @@
 import React from 'react';
-import "./ProgressBar.css"
+import "./ProgressBar.css";
+
 const ProgressBar = (props) => {
     const { questionNum, questionNum_end,question} = props;
     const progressWidth = (questionNum/questionNum_end)*100+"%";
     
-  
     return (
       <div className="progress_wrap">
         <div className="progress_cont">

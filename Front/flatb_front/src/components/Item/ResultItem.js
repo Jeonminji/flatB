@@ -7,7 +7,7 @@ const ResultItem = (props) => {
     const [resultImg, setResultImg]=useState("");
     const [platform, setplatform] = useState("");
     console.log(platformName.toUpperCase());
-
+    
     useEffect(() => {
 
         if(recommend ==="OTT"){
@@ -29,14 +29,13 @@ const ResultItem = (props) => {
                         responseType: "json"
                         })
                         .then((res) => {
-                            console.log(res.data.data.ottLogo);
-                            setResultImg(res.data.data.ottLogo);
-                            setplatform(res.data.data.ottName);
+                            setResultImg(res.data.data.musicLogo);
+                            setplatform(res.data.data.musicName);
                             
                         })
         }
               
-    },[])
+    },[platformName,recommend])
 
     return (
         <div className="recommendPlatform">
