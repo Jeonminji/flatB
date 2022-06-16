@@ -4,7 +4,55 @@ import {Link,useNavigate} from 'react-router-dom'
 import "./loginPage.css";
  
 function Login(props) {
-    
+    const [inputId, setInputId] = useState('')
+    const [inputPw, setInputPw] = useState('')
+
+    //페이지 이동
+    const navigate = useNavigate();
+ 
+	// input data 의 변화가 있을 때마다 value 값을 변경해서 useState 해준다
+    const handleInputId = (e) => {
+        setInputId(e.target.value)
+    }
+ 
+    const handleInputPw = (e) => {
+        setInputPw(e.target.value)
+    }
+ 
+	// login 버튼 클릭 이벤트
+    const onSubmit  = useCallback(
+        async (e) => {
+          e.preventDefault()
+          try {
+            await axios({
+              method: "POST",
+              url: '/user/login',
+              data:{ 
+                userId: inputId,
+                password: inputPw}
+
+            })
+              .then((res) => {
+                if(res.status === 200){
+                  console.log(res);
+                  const accessToken = res.data.accessToken;
+                  axios.defaults.headers['Authorization'] = 'Bearer '+ accessToken;
+                  props.loginCallBack(true);
+                  localStorage.setItem("user",accessToken);
+                  navigate("/")
+                }
+                else{
+                  alert("로그인 실패");
+                }
+                
+              })
+          } catch (err) {
+            alert("로그인 실패");
+          }
+        },
+        [inputId,inputPw,navigate,props]
+      )
+ 
  
     return(
         <div className="login-form">
