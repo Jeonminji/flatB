@@ -2,10 +2,10 @@ package com.example.flatB.service;
 
 import com.example.flatB.domain.dto.ReviewOttSaveDto;
 import com.example.flatB.domain.dto.ReviewOttUpdateDto;
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.ReviewOttEntity;
-import com.example.flatB.domain.entity.UserEntity;
+import com.example.flatB.repository.MemberRepository;
 import com.example.flatB.repository.ReviewOttRepository;
-import com.example.flatB.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewOttService {
     private final ReviewOttRepository reviewOttRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     //리뷰 작성
     @Transactional
     public String post(ReviewOttSaveDto reviewOttSaveDto, String userId) {
-        UserEntity userEntity = userRepository.findByUserId(userId)
+        Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalAccessError(userId + ": 해당 사용자가 존재하지 않습니다."));
-        reviewOttSaveDto.setUserEntity(userEntity);
+        reviewOttSaveDto.setMember(member);
         reviewOttRepository.save(reviewOttSaveDto.toEntity());
         return "SUCCESS";
     }
@@ -46,8 +46,8 @@ public class ReviewOttService {
 
     //내가 쓴 모든 리뷰 조회
     @Transactional
-    public List<ReviewOttEntity> getBoardsByUser(UserEntity userEntity) {
-        List<ReviewOttEntity> entities = reviewOttRepository.findAllByUserEntityOrderByOttBoardnoDesc(userEntity);
+    public List<ReviewOttEntity> getBoardsByUser(Member member) {
+        List<ReviewOttEntity> entities = reviewOttRepository.findAllByMemberOrderByOttBoardnoDesc(member);
         return entities;
     }
 

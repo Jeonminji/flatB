@@ -2,12 +2,12 @@ package com.example.flatB.service;
 
 import com.example.flatB.domain.dto.RecruitmentSaveDto;
 import com.example.flatB.domain.dto.RecruitmentUpdateDto;
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.OttEntity;
 import com.example.flatB.domain.entity.RecruitmentEntity;
-import com.example.flatB.domain.entity.UserEntity;
+import com.example.flatB.repository.MemberRepository;
 import com.example.flatB.repository.OttRepository;
 import com.example.flatB.repository.RecruitmentRepository;
-import com.example.flatB.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,20 +17,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RecruitmentService {
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final OttRepository ottRepository;
 
     //글 작성
     @Transactional
     public String post(RecruitmentSaveDto recruitmentSaveDto, String userId) {
-        UserEntity userEntity = userRepository.findByUserId(userId)
+        Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalAccessError(userId + ": 해당 사용자가 존재하지 않습니다."));
 
         OttEntity ottEntity = ottRepository.findByOttName(recruitmentSaveDto.getPlatformname())
                 .orElseThrow(() -> new IllegalAccessError("해당 플랫폼이 존재하지 않습니다."));
 
-        recruitmentSaveDto.setUserEntity(userEntity);
+        recruitmentSaveDto.setMember(member);
         recruitmentSaveDto.setOttEntity(ottEntity);
         recruitmentRepository.save(recruitmentSaveDto.toEntity());
         return "SUCCESS";
@@ -60,8 +60,8 @@ public class RecruitmentService {
 
     //내 글 보기
     @Transactional
-    public List<RecruitmentEntity> getRecruitmentBoardByUser(UserEntity userEntity) {
-        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByUserEntityOrderByBoardNoDesc(userEntity);
+    public List<RecruitmentEntity> getRecruitmentBoardByUser(Member member) {
+        List<RecruitmentEntity> recruitmentEntities = recruitmentRepository.findAllByMemberOrderByBoardNoDesc(member);
         return recruitmentEntities;
     }
 
