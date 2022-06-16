@@ -4,6 +4,8 @@ public class ResponseMessage {
     //회원관련
     public static final String LOGIN_SUCCESS = "로그인 성공";
     public static final String LOGIN_FAIL = "로그인 실패";
+    public static final String LOGOUT_SUCCESS = "로그아웃 성공";
+    public static final String LOGOUT_FAIL = "로그아웃 실패";
     public static final String READ_USER = "회원 정보 조회 성공";
     public static final String NOT_FOUND_USER = "회원을 찾을 수 없습니다.";
     public static final String CREATED_USER = "회원 가입 성공";
@@ -27,6 +29,10 @@ public class ResponseMessage {
     //크롤링관련
     public static final String CRAWLLING_SUCCESS = "크롤링 성공";
     public static final String CRAWLLING_FAIL = "크롤링 실패";
+
+    //이미지관련
+    public static final String IMAGE_SUCCESS = "이미지 전달 성공";
+    public static final String IMAGE_FAIL = "이미지 전달 실패";
 
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 에러";
     public static final String DB_ERROR = "데이터베이스 에러";
