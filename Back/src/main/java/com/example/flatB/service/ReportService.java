@@ -2,7 +2,6 @@ package com.example.flatB.service;
 
 import com.example.flatB.domain.dto.ReportDto;
 import com.example.flatB.domain.entity.Member;
-import com.example.flatB.domain.entity.UserEntity;
 import com.example.flatB.repository.MemberRepository;
 import com.example.flatB.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;

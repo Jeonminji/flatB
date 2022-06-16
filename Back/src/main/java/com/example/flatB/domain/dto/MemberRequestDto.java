@@ -2,7 +2,6 @@ package com.example.flatB.domain.dto;
 
 import com.example.flatB.domain.entity.Authority;
 import com.example.flatB.domain.entity.Member;
-import com.example.flatB.domain.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
