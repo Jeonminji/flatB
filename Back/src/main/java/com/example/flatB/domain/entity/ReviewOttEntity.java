@@ -40,7 +40,7 @@ public class ReviewOttEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ott_writerid")
-    private UserEntity userEntity;
+    private Member member;
 
     @CreationTimestamp
     @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")
@@ -56,7 +56,7 @@ public class ReviewOttEntity {
     @Builder
     public ReviewOttEntity(Long ottBoardno, String ottPlatformname, BigDecimal ottPricepoints, BigDecimal ottQualitypoints,
                            BigDecimal ottTranslationpoints, BigDecimal ottServicepoints, BigDecimal ottTotalpoints,
-                           String ottContent, UserEntity userEntity, LocalDateTime ottRegdate) {
+                           String ottContent, Member member, LocalDateTime ottRegdate) {
         this.ottBoardno = ottBoardno;
         this.ottPlatformname = ottPlatformname;
         this.ottPricepoints = ottPricepoints;
@@ -65,7 +65,7 @@ public class ReviewOttEntity {
         this.ottServicepoints = ottServicepoints;
         this.ottTotalpoints = ottTotalpoints;
         this.ottContent = ottContent;
-        this.userEntity = userEntity;
+        this.member = member;
         this.ottRegdate = LocalDateTime.now();
     }
 

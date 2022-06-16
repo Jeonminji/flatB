@@ -39,7 +39,7 @@ public class ReviewMusicEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "music_writerid")
-    private UserEntity userEntity;
+    private Member member;
 
     @CreationTimestamp
     @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")
@@ -55,7 +55,7 @@ public class ReviewMusicEntity {
     @Builder
     public ReviewMusicEntity(Long musicBoardno, String musicPlatformname, BigDecimal musicPricepoints,
                              BigDecimal musicSoundpoints, BigDecimal musicServicepoints, BigDecimal musicTotalpoints,
-                             String musicContent, UserEntity userEntity, LocalDateTime musicRegdate) {
+                             String musicContent, Member member, LocalDateTime musicRegdate) {
         this.musicBoardno = musicBoardno;
         this.musicPlatformname = musicPlatformname;
         this.musicPricepoints = musicPricepoints;
@@ -63,7 +63,7 @@ public class ReviewMusicEntity {
         this.musicServicepoints = musicServicepoints;
         this.musicTotalpoints = musicTotalpoints;
         this.musicContent = musicContent;
-        this.userEntity = userEntity;
+        this.member = member;
         this.musicRegdate = LocalDateTime.now();
     }
 
