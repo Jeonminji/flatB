@@ -2,7 +2,6 @@ package com.example.flatB.repository;
 
 import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.ReviewOttEntity;
-import com.example.flatB.domain.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

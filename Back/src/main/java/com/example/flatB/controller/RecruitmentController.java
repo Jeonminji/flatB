@@ -9,7 +9,6 @@ import com.example.flatB.domain.dto.RecruitmentSaveDto;
 import com.example.flatB.domain.dto.RecruitmentUpdateDto;
 import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.RecruitmentEntity;
-import com.example.flatB.domain.entity.UserEntity;
 import com.example.flatB.repository.MemberRepository;
 import com.example.flatB.service.MemberService;
 import com.example.flatB.service.RecruitmentService;
