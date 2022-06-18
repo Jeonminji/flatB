@@ -9,6 +9,7 @@ import RecruitmentCategory from './pages/recruitmentCategoryPage';
 import RecommendOtt from './pages/recommendOttPage';
 import RecommendMusic from './pages/recommendMusicPage';
 import Login from './pages/loginPage'
+import ComparePage from './pages/comparePage'
 
 import './App.css';
 function App() {
@@ -37,6 +38,7 @@ function App() {
             
             <Route  path="/" element={<Home isLogin={isLogin} loginCallBack={loginCallBack}/>}></Route>
             <Route  path="/register" element={<Register />}></Route>
+            <Route  path="/compare" element={<ComparePage />}></Route>
             <Route  path="/report" element={<Declaration  isLogin={isLogin} loginCallBack={loginCallBack}/>}></Route>
             <Route  path="/recruitment" element={<Recruitment  isLogin={isLogin} loginCallBack={loginCallBack}/>}></Route>
             <Route  path="/recruitment/:category" element={<RecruitmentCategory  isLogin={isLogin} loginCallBack={loginCallBack}/>}></Route>
