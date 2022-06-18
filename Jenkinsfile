@@ -1,6 +1,6 @@
 pipeline{
   agent any
-  environment{
+  environment {
     registry="sksznddl1/flatb-front"
     registryCredential = 'sksznddl1'
     
@@ -10,32 +10,29 @@ pipeline{
   
   stages{
     stage('build'){
-      steps{
+      steps {
           sh 'docker build -f Dockerfile-front -t $registry:latest .'
           sh 'docker build -t $backRegistry:latest .'
       }
-    }
+     }
     
-  stage('Push Front image') {
-            steps {
-                withDockerRegistry([ credentialsId: registryCredential, url: "" ]) {
-                    sh 'docker push $registry:latest'
-                }
-                echo 'Push Front image...'
-            }
+    stage('Push Front image') {
+      steps {
+        withDockerRegistry([ credentialsId: registryCredential, url: "" ]) {
+          sh 'docker push $registry:latest'
         }
-   
-  }
-  
-  stage('Push Back image') {
-            steps {
-                withDockerRegistry([ credentialsId: backCredential, url: "" ]) {
-                    sh 'docker push $backRegistry:latest'
-                }
-                echo 'Push Back image...'
-            }
-        }
-   
+         echo 'Push Front image...'
+      }
+     }
+ 
+    stage('Push Back image') {
+      steps {
+        withDockerRegistry([ credentialsId: backCredential, url: "" ]) {
+          sh 'docker push $backRegistry:latest'
+         }
+         echo 'Push Back image...'
+      }
+    }
   }
 }
 
