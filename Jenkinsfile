@@ -43,8 +43,8 @@ pipeline{
      stage('Deploy to GKE'){
       steps{
           sh "sed -i 's/flatb-front/flatb-front:$BUILD_ID/g' front_deployment.yml"
-          step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, custerName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'back_deployment.yml', credentialsId: env.CREDENTIALS_ID,verifyDeployments: true])
-          step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, custerName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'front_deployment.yml', credentialsId: env.CREDENTIALS_ID,verifyDeployments: true])
+          step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'back_deployment.yml', credentialsId: env.CREDENTIALS_ID,verifyDeployments: true])
+          step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'front_deployment.yml', credentialsId: env.CREDENTIALS_ID,verifyDeployments: true])
       }
     }
 
