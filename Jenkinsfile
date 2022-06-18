@@ -8,7 +8,7 @@ pipeline{
   stages{
     stage('build'){
       steps{
-        test=docker.build("sksznddl1/flatb-front:latest")
+          sh 'docker build -f Dockerfile -t $registry:latest .'
       }
     }
 
