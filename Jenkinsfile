@@ -6,6 +6,12 @@ pipeline{
     
     backRegistry="yih0322/flatbback"
     backCredential = 'yih0322'
+    
+    PROJECT_ID = 'handy-resolver-344207'
+    CLUSTER_NAME = 'k8s'
+    LOCATION = 'asia-northeast3-a'
+    CREDENTIALS_ID = 'gke'
+
   }
   
   stages{
@@ -33,5 +39,16 @@ pipeline{
          echo 'Push Back image...'
       }
     }
+    
+     stage('Deploy to GKE'){
+      steps{
+          sh "sed -i 's/$registry/$registry:$BUILD_ID/g' front_deployment.yml"
+          step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, custerName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'back_deployment.yml', credentialsId: env.CREDENTIALS_ID,verifyDeployments: true])
+          step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, custerName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'front_deployment.yml', credentialsId: env.CREDENTIALS_ID,verifyDeployments: true])
+      }
+    }
+
+    
+    
   }
 }
