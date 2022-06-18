@@ -11,6 +11,12 @@ pipeline{
           sh 'docker build -f Dockerfile -t $registry:latest .'
       }
     }
+    stage('image push'){
+      steps{
+        withDockerRegistry([ credentialsId: registryCredential, url: "" ]) {
+          sh 'docker push $registry:latest'
+      }
+    }
 
   }
 }
