@@ -57,7 +57,7 @@ public class JsoupComponent { //크롤링
 
 
     public void setup() { //셀레니움 설정
-        Path path = Paths.get(System.getProperty("user.dir"), ("Back/src/main/resources/chromedriver.exe")); //리눅스에서는 /usr/bin/chromedriver로 수정
+        Path path = Paths.get("/usr/bin/chromedriver"); //리눅스에서는 /usr/bin/chromedriver로 수정
         System.setProperty("webdriver.chrome.driver", path.toString()); //크롬 드라이버 셋팅 (드라이버 설치한 경로 입력)
 
         ChromeOptions options = new ChromeOptions();
