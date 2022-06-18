@@ -4,7 +4,8 @@ pipeline{
   stages{
     stage('build'){
       steps{
-        sh 'cd ./Front/flatb_front && rm -rf node_modules && rm -rf package-lock.json && npm install && npm run build'      
+        sh 'cd ./Front/flatb_front'
+        test=docker.build("sksznddl1/flatb-front:${env.BUILD_ID}")
       }
     }
 
