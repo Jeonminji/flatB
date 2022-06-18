@@ -7,7 +7,7 @@ pipeline{
     backRegistry="yih0322/flatbback"
     backCredential = 'yih0322'
     
-    PROJECT_ID = 'handy-resolver-344207'
+    PROJECT_ID = 'myproject-344103'
     CLUSTER_NAME = 'k8s'
     LOCATION = 'asia-northeast3-a'
     CREDENTIALS_ID = 'gke'
