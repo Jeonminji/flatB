@@ -27,18 +27,14 @@ const Header= (props) =>{
             navigate("/login");
         }
         else{
-            axios({
-            method: "get",
-            url: "/member/me",
-            responseType: "json"
-             }).then((res)=>{
-               setLoginState("login");
-                props.loginCallBack(false);
-                localStorage.clear();
-                alert("로그아웃 되었습니다.");
-                delete axios.defaults.headers.common['Authorization'];
             
-        });
+           setLoginState("login");
+            props.loginCallBack(false);
+            localStorage.clear();
+            alert("로그아웃 되었습니다.");
+            delete axios.defaults.headers.common['Authorization'];
+            
+       
         }
     }
 
