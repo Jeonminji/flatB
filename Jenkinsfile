@@ -8,7 +8,7 @@ pipeline{
   stages{
     stage('build'){
       steps{
-          sh 'docker build -f Dockerfile -t $registry:latest .'
+          sh 'docker build -f Dockerfile-front -t $registry:latest .'
       }
     }
     
