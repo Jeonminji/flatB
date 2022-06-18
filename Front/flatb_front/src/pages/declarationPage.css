@@ -1,0 +1,85 @@
+textarea{
+    cursor: pointer
+}
+
+.declar_wrap{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display:flex;
+    justify-content: center;
+
+}
+.declar_cont{
+  position: absolute;
+}
+
+.declar_form{
+    margin-top: 40px;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    
+}
+.declar_nickname{
+    margin: 20px 20px 30px 20px;
+    display: flex;
+}
+.declar_category{
+    margin: 20px 20px 30px 20px;
+    display: flex;
+}
+.declar_type{
+    margin: 20px 20px 30px 20px;
+    display: flex;
+}
+.declar_content{
+    margin: 0 20px;
+    float: left;
+}
+.declar_content div{
+   text-align: left;
+   margin-bottom:10px;
+}
+.declar_btn_area{
+    margin: 20px;
+    
+}
+.declar_btn{
+    margin: 0 20px;
+    float: right;
+    width: 80px;
+    height: 40px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #DE4D31;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.declar_cont div span{
+   width: 120px;
+   text-align: left;
+}
+
+.declar_input_nickname{
+    height: 22px;
+}
+.declar_textarea_content{
+    width: 1000px;
+    height: 100px;
+    resize: none;
+}
+
+.declar_select {
+    width: 170px;
+    height: 28px;
+    font-size: 15px;
+    border: 1px solid #999;
+    cursor: default;
+}

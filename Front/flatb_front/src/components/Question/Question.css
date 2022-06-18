@@ -1,0 +1,17 @@
+.question_wrap{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+.question_cont{
+    margin-top: 40px;
+    width: 1200px;
+}
+.questionBox{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+    clear: both;
+}
