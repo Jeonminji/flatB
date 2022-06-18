@@ -34,7 +34,6 @@ function Login(props) {
             })
               .then((res) => {
                 if(res.status === 200){
-                  console.log(res);
                   const accessToken = res.data.accessToken;
                   axios.defaults.headers['Authorization'] = 'Bearer '+ accessToken;
                   props.loginCallBack(true);
