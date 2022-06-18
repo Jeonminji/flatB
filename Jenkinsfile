@@ -8,14 +8,14 @@ pipeline{
   stages{
     stage('build'){
       steps{
-          sh 'docker build -f Dockerfile-front -t $registry:latest .'
+          sh 'docker build -f Dockerfile-front -t $registry:$env.BUILD_ID .'
       }
     }
     
   stage('Push image') {
             steps {
                 withDockerRegistry([ credentialsId: registryCredential, url: "" ]) {
-                    sh 'docker push $registry:latest'
+                    sh 'docker push $registry:$env_BUILD.ID'
                 }
                 echo 'Push image...'
             }
