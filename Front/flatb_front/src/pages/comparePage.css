@@ -8,13 +8,13 @@ li {
 
 .wrapper {
     display: flex;
-    height: 800px;
+    height: 700px;
     justify-content: center;
     align-items: center;
 }
 
 .compare_item {
-    flex-basis: 250px;
+    flex-basis: 210px;
     flex-shrink: 0;
     margin: 0 4px;
     transition: all .4s;
@@ -22,7 +22,7 @@ li {
 
 .compare_item:hover {
     
-    flex-basis: 450px;
+    flex-basis: 400px;
     margin: 0 20px;
 }
 
@@ -57,7 +57,7 @@ li {
     font-size: 20px;
     color: #DE4D31;
     font-weight: 800;
-    width: 230px;
+    width: 190px;
     text-align: center;
 }
 
@@ -73,13 +73,24 @@ li {
     opacity: 0;
 }
 
+::-webkit-scrollbar {
+    display: none;
+  }
+  
+
 .compare_item:hover .compare_hidden{
     opacity: 1;
     transition-delay: .4s;
-    max-height: 50em;
+    max-height: 40em;
+    overflow-y: auto;
+    scrollbar-width: none;
     margin-top: 0.4em;
     
 }
+.compare_item:hover .compare_hidden::-webkit-scrollbar{
+    display:none;
+  }
+
 .compare_item:hover .compare_platform{
     text-align: left;
     font-size: 30px;
@@ -100,10 +111,3 @@ li {
     font-weight: 900;
     font-size: 18px;
 }
-
-
-
-
-
-
-
