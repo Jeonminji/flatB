@@ -24,8 +24,9 @@ public class RecruitmentEntity {
     @Column(length = 100, nullable = false)
     private String content;
 
-    @Column(length = 10, nullable = false)
-    private String platformname;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "platformname")
+    private OttEntity ottEntity;
 
     @Column(nullable = false)
     private int totalcount;
@@ -44,17 +45,17 @@ public class RecruitmentEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
-    private UserEntity userEntity;
+    private Member member;
 
     @CreationTimestamp
     @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")
     private LocalDateTime regdate;
 
-    public void update(String title, String content, String platformname, int totalcount, int currentcount,
+    public void update(String title, String content, OttEntity ottEntity, int totalcount, int currentcount,
                        String usedateStart, String usedateEnd, String contact) {
         this.title = title;
         this.content = content;
-        this.platformname = platformname;
+        this.ottEntity = ottEntity;
         this.totalcount = totalcount;
         this.currentcount = currentcount;
         this.usedateStart = usedateStart;

@@ -26,11 +26,11 @@ public class OttRecEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private Member member;
 
     @Builder
-    public OttRecEntity(ReviewOttEntity reviewOttEntity, UserEntity userEntity) {
+    public OttRecEntity(ReviewOttEntity reviewOttEntity, Member member) {
         this.reviewOttEntity = reviewOttEntity;
-        this.userEntity = userEntity;
+        this.member = member;
     }
 }

@@ -2,10 +2,10 @@ package com.example.flatB.service;
 
 import com.example.flatB.domain.dto.ReviewMusicSaveDto;
 import com.example.flatB.domain.dto.ReviewMusicUpdateDto;
+import com.example.flatB.domain.entity.Member;
 import com.example.flatB.domain.entity.ReviewMusicEntity;
-import com.example.flatB.domain.entity.UserEntity;
+import com.example.flatB.repository.MemberRepository;
 import com.example.flatB.repository.ReviewMusicRepository;
-import com.example.flatB.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewMusicService {
     private final ReviewMusicRepository reviewMusicRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     //리뷰작성
     @Transactional
     public String post(ReviewMusicSaveDto reviewMusicSaveDto, String userId) {
-        UserEntity userEntity = userRepository.findByUserId(userId)
+        Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalAccessError(userId + ": 해당 사용자가 존재하지 않습니다."));
-        reviewMusicSaveDto.setUserEntity(userEntity);
+        reviewMusicSaveDto.setMember(member);
         reviewMusicRepository.save(reviewMusicSaveDto.toEntity());
         return "SUCCESS";
     }
@@ -46,15 +46,15 @@ public class ReviewMusicService {
 
     //내가 쓴 모든 리뷰 조회
     @Transactional
-    public List<ReviewMusicEntity> getBoardsByUser(UserEntity userEntity) {
-        List<ReviewMusicEntity> entities = reviewMusicRepository.findAllByUserEntityOrderByMusicBoardnoDesc(
-                userEntity);
+    public List<ReviewMusicEntity> getBoardsByUser(Member member) {
+        List<ReviewMusicEntity> entities = reviewMusicRepository.findAllByMemberOrderByMusicBoardnoDesc(
+                member);
         return entities;
     }
 
     //수정, 삭제를 위한 특정 리뷰 조회
     @Transactional
-    public ReviewMusicEntity getBoard(Long board_no, String userId) {
+    public ReviewMusicEntity getBoard(Long board_no) {
         ReviewMusicEntity reviewMusicEntity = reviewMusicRepository.findByMusicBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
         return reviewMusicEntity;
@@ -62,7 +62,7 @@ public class ReviewMusicService {
 
     //리뷰 수정
     @Transactional
-    public String update(Long board_no, ReviewMusicUpdateDto reviewMusicUpdateDto, String userId) {
+    public String update(Long board_no, ReviewMusicUpdateDto reviewMusicUpdateDto) {
         ReviewMusicEntity reviewMusicEntity = reviewMusicRepository.findByMusicBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
 
@@ -76,7 +76,7 @@ public class ReviewMusicService {
 
     //리뷰 삭제
     @Transactional
-    public String delete(Long board_no, String userId) {
+    public String delete(Long board_no) {
         ReviewMusicEntity reviewMusicEntity = reviewMusicRepository.findByMusicBoardno(board_no)
                 .orElseThrow(() -> new IllegalAccessError(board_no + ": 해당 게시글이 존재하지 않습니다."));
 

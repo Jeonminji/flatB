@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "CookieRun";
+  font-weight: 50;
+  src: url("./font/CookieRun Regular.ttf");
+}
+body{
+  overflow-x:hidden;
+}

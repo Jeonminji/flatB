@@ -26,11 +26,11 @@ public class MusicRecEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private Member member;
 
     @Builder
-    public MusicRecEntity(ReviewMusicEntity reviewMusicEntity, UserEntity userEntity) {
+    public MusicRecEntity(ReviewMusicEntity reviewMusicEntity, Member member) {
         this.reviewMusicEntity = reviewMusicEntity;
-        this.userEntity = userEntity;
+        this.member = member;
     }
 }

@@ -15,10 +15,11 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class RecruitmentResponseDto { //보여주는거
-    private Long BoardNo;
+    private Long boardNo;
     private String title;
     private String content;
-    private String Platformname;
+    private String platformname;
+    private String ottLogo;
     private int totalcount;
     private int currentcount;
     private String usedateStart;
@@ -28,16 +29,17 @@ public class RecruitmentResponseDto { //보여주는거
     private LocalDateTime regdate;
 
     public RecruitmentResponseDto(RecruitmentEntity recruitmentEntity) {
-        this.BoardNo = recruitmentEntity.getBoardNo();
+        this.boardNo = recruitmentEntity.getBoardNo();
         this.title = recruitmentEntity.getTitle();
         this.content = recruitmentEntity.getContent();
-        this.Platformname = recruitmentEntity.getPlatformname();
+        this.platformname = recruitmentEntity.getOttEntity().getOttName();
+        this.ottLogo = recruitmentEntity.getOttEntity().getOttLogo();
         this.totalcount = recruitmentEntity.getTotalcount();
         this.currentcount = recruitmentEntity.getCurrentcount();
         this.usedateStart = recruitmentEntity.getUsedateStart();
         this.usedateEnd = recruitmentEntity.getUsedateEnd();
         this.contact = recruitmentEntity.getContact();
-        this.nickname = recruitmentEntity.getUserEntity().getNickname();
+        this.nickname = recruitmentEntity.getMember().getNickname();
         this.regdate = recruitmentEntity.getRegdate();
     }
 
@@ -48,5 +50,4 @@ public class RecruitmentResponseDto { //보여주는거
     public static List<RecruitmentResponseDto> ofEntities(List<RecruitmentEntity> recruitmentEntities) {
         return recruitmentEntities.stream().map(RecruitmentResponseDto::ofEntity).collect(Collectors.toList());
     }
-
 }

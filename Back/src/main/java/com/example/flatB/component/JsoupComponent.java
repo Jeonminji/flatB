@@ -24,6 +24,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -56,7 +57,7 @@ public class JsoupComponent { //크롤링
 
 
     public void setup() { //셀레니움 설정
-        Path path = Paths.get(System.getProperty("user.dir"), ("src/main/resources/chromedriver.exe"));
+        Path path = Paths.get("/usr/bin/chromedriver"); //리눅스에서는 /usr/bin/chromedriver로 수정
         System.setProperty("webdriver.chrome.driver", path.toString()); //크롬 드라이버 셋팅 (드라이버 설치한 경로 입력)
 
         ChromeOptions options = new ChromeOptions();
@@ -94,7 +95,6 @@ public class JsoupComponent { //크롤링
             for (int i = 0; i < elements1.size(); i++) { //0~3열
                 if (i == 3) break;
                 CompareOttDto compareOttDto = CompareOttDto.builder().build();
-                StringBuffer etc = new StringBuffer();
                 StringBuffer quality = new StringBuffer();
                 for (int j = 0; j < elements2.size(); j++) { //1~7행
                     Element content = elements2.get(j);
@@ -111,12 +111,9 @@ public class JsoupComponent { //크롤링
                     } else if (j == 6) {
                         final String UHDQuality = getUHDQuality(tdContents.get(i + 1).text()); //UHD 화질 이용 가능
                         quality.append(UHDQuality);
-                    } else {
-                        etc.append(tdContents.get(0).text() + ": " + tdContents.get(i + 1).text() + "/");
                     }
                 }
                 compareOttDto.setOttQuality(quality.toString());
-                compareOttDto.setOttEtc(etc.toString());
                 compareOttRepository.save(compareOttDto.toEntity());
             }
         }
@@ -147,24 +144,17 @@ public class JsoupComponent { //크롤링
                 driver.get(url);    //브라우저에서 url로 이동한다.
                 Thread.sleep(1000); //브라우저 로딩될때까지 잠시 기다린다.
 
-                List<WebElement> elements = driver.findElements(By.className("product-name"));
-                List<WebElement> discriptions = driver.findElements(By.className("product-discription"));
-                List<WebElement> prices = driver.findElements(By.className("product-price"));
-
-                for (int i = 0; i < elements.size(); i++) {
-                    String discription[] = discriptions.get(i).getText().split(", ");
-                    String price[] = prices.get(i).getText().split(" ");
-                    String finalPrice = price[0];
-                    if (price.length > 1)
-                        finalPrice = price[1];
-
+                for(int i = 2; i < 5; i++) {
+                    WebElement plan = driver.findElement(By.xpath("//*[@id=\"contents\"]/div[2]/div/div[2]/div/div[1]/section/table/thead/tr/th[" + i + "]/div/h2"));
+                    WebElement price = driver.findElement(By.xpath("//*[@id=\"contents\"]/div[2]/div/div[2]/div/div[1]/section/table/thead/tr/th[" + i + "]/div/button"));
+                    WebElement quality = driver.findElement(By.xpath("//*[@id=\"contents\"]/div[2]/div/div[2]/div/div[1]/section/table/tbody/tr[3]/td[" + (i-1) + "]/span"));
+                    WebElement playbacknum = driver.findElement(By.xpath("//*[@id=\"contents\"]/div[2]/div/div[2]/div/div[1]/section/table/tbody/tr[4]/td[" + (i-1) + "]/span"));
                     CompareOttDto compareOttDto = CompareOttDto.builder().build();
                     compareOttDto.setOttName("Wavve");
-                    compareOttDto.setOttPlan(elements.get(i).getText());
-                    compareOttDto.setOttPlaybacknum(discription[0]);
-                    compareOttDto.setOttQuality(discription[1]);
-                    compareOttDto.setOttEtc(discription[2]);
-                    compareOttDto.setOttPrice(finalPrice);
+                    compareOttDto.setOttPlan(plan.getText());
+                    compareOttDto.setOttPlaybacknum(playbacknum.getText());
+                    compareOttDto.setOttQuality(quality.getText());
+                    compareOttDto.setOttPrice(price.getText());
                     compareOttRepository.save(compareOttDto.toEntity());
                 }
 

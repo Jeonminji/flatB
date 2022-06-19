@@ -33,7 +33,7 @@ public class ReportEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
-    private UserEntity user;
+    private Member member;
 
     @CreationTimestamp
     @DateTimeFormat(pattern = "dd.MM.yyyy hh:mm")
