@@ -18,6 +18,7 @@ pipeline{
     stage('build'){
       steps {
           sh 'docker build -f Dockerfile-front -t $registry:$BUILD_ID .'
+          sh 'docker build -f Dockerfile-front -t $registry:latest .'
           sh 'docker build -t $backRegistry:latest .'
       }
      }
@@ -26,6 +27,7 @@ pipeline{
       steps {
         withDockerRegistry([ credentialsId: registryCredential, url: "" ]) {
           sh 'docker push $registry:$BUILD_ID'
+          sh 'docker push $registry:latest'
         }
          echo 'Push Front image...'
       }
