@@ -4,6 +4,19 @@
 - [플랫B 노션](https://ink-candy-52f.notion.site/B-8e7b84597f204a9d9dcc413d1e726ef3)
 - [플랫B 데모 영상](https://www.youtube.com/watch?v=wC-yl06Zl7Q)
 ---
+## 사용기술 및 개발환경
+
+
+Category | Detail
+---- | ----
+Laguage |  HTML5, CSS, Javascript, Java
+IDE | IntelliJ. Visual Studio Code
+DataBase | MySQL
+Framework | SpringBoot, React, Spring Security
+Document | Notion, Figma, Jira
+CI/CD | Github, Jenkins
+ETC | Docker, GCP
+---
 - **주제 발표(3/28)**
   - 발표자: 이민주
   - PPT 제작: 유인희, 전현정
